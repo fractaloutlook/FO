@@ -84,7 +84,7 @@ const LandingPage = () => {
               <ul className="space-y-1 text-blue-700">
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  Total transparency about this weird experiment
+                  Total transparency about this experiment
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
@@ -92,10 +92,37 @@ const LandingPage = () => {
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  No fake scarcity or "only 3 spots left!" nonsense—any scarcity mentioned will be REAL. :D
+                  No fake scarcity or "only 3 spots left!" nonsense — any scarcity mentioned will be REAL.
                 </li>
               </ul>
             </div>
+            {/* Non-Promises Section */}
+            <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
+              <p className="font-medium text-green-900 mb-2">Knowing me:</p>
+              <ul className="space-y-1 text-green-700">
+                <li className="flex items-center gap-2">
+                  <span>•</span>
+                   This could end up being a game
+                </li>
+                <li className="flex items-center gap-2">
+                  <span>•</span>
+                  or a trailhead
+                </li>
+                <li className="flex items-center gap-2">
+                  <span>•</span>
+                  The first 10 customers will probably get an extra cool title
+                </li>
+                <li className="flex items-center gap-2">
+                  <span>•</span>
+                  There will probably be a discord
+                </li>
+                <li className="flex items-center gap-2">
+                  <span>•</span>
+                  There will maybe be live video calls
+                </li>
+              </ul>
+            </div>
+
           </div>
 
           {/* CTA Button */}
