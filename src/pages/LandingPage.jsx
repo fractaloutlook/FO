@@ -3,7 +3,7 @@ import { Timer, Construction, ArrowRight } from 'lucide-react';
 
 const LandingPage = () => {
   const [timeElapsed, setTimeElapsed] = useState('');
-  const launchDate = new Date('2024-01-23T16:23:00'); // Update this to your actual launch time
+  const launchDate = new Date('2025-01-23T14:10:00');
 
   useEffect(() => {
     const updateTime = () => {
