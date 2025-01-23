@@ -18,17 +18,21 @@ jobs:
           node-version: '18'
 
       - name: Install Dependencies
-        run: npm install
+        run: |
+          npm ci
+          npm install -g vite
 
       - name: Create CNAME
         run: echo "fractaloutlook.com" > public/CNAME
 
       - name: Build
         run: npm run build
+        env:
+          CI: true
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
           branch: gh-pages
           folder: dist
-          clean: true  # Automatically remove deleted files from deploy branch
+          clean: true
