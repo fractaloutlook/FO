@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Timer, Construction } from 'lucide-react';
-import KofiButton from '../components/KofiButton';
+import KofiButton from '@/components/KofiButton';
 
 // Rest of the component stays exactly the same
 const LandingPage = () => {
