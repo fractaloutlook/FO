@@ -10,20 +10,21 @@ const KofiButton = () => {
 
     script.onload = () => {
       window.kofiWidgetOverlay.draw('timschei', {
-        'type': 'floating-chat',
-        'floating-chat.donateButton.text': 'Support This Experiment ($25)',
-        'floating-chat.donateButton.background-color': '#3b82f6',
-        'floating-chat.donateButton.text-color': '#fff'
+        'type': 'popup',
+        'trigger-type': 'custom-button'
       });
     };
 
     return () => {
       if (script.parentNode) script.parentNode.removeChild(script);
+      delete window.kofiWidgetOverlay;
     };
   }, []);
 
   const handleClick = () => {
-    window.kofiWidgetOverlay?.toggleFloatingChat();
+    if (window.kofiWidgetOverlay) {
+      window.kofiWidgetOverlay.drawIframe();
+    }
   };
 
   return (
