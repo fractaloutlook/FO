@@ -26,7 +26,7 @@ const KofiButton = ({ username = "timschei" }) => {
   }, [username]);
 
   const handleClick = () => {
-    window.kofiWidgetOverlay?.toggleFloatingChat();
+    window.kofiWidgetOverlay?.openPopup();  // Changed from toggleFloatingChat to openPopup
   };
 
   return (

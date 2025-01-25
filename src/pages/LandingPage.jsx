@@ -41,7 +41,7 @@ const LandingPage = () => {
 
           {/* Main Content */}
           <h1 className="text-4xl font-bold text-gray-900 mb-6">
-            "Claude and I are trying to be less like the scammers with our offerings!"
+            "Hey look! An honest landing page!"
           </h1>
           
           {/*<div className="mb-6">
@@ -54,7 +54,9 @@ const LandingPage = () => {
               online without all of the nonsense false promises of teaching you to be
               a thought leader, write a novel in 20 days, make your old novel suddenly
               a best seller or whatever the heck. The best is "How to make money with AI!" 
-              These people are nonsense and 90% scammers. Or at least liars.
+              These people are nonsense and 90% scammers.
+
+              I don't even know what this is yet. That much is true. I think it's a game though.
             </p>
 
             {/* Status Section */}
@@ -106,27 +108,27 @@ const LandingPage = () => {
 
             {/* Early Supporter Benefits Section */}
             <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
-              <p className="font-medium text-green-900 mb-2">Early Supporter Benefits:</p>
+              <p className="font-medium text-green-900 mb-2">Knowing me:</p>
               <ul className="space-y-1 text-green-700">
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  "First 10" Special Role & Recognition
+                  This might be a game
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  Access to Development Discord
+                  or a trailhead?
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  Watch This Evolve in Real-Time
+                  The first X people will probably get a cool title
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  Vote on Future Directions
+                  There will probably be a discord
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  Early Access to Whatever This Becomes
+                  It will probably change directions a zillion times
                 </li>
               </ul>
             </div>
@@ -157,7 +159,8 @@ const LandingPage = () => {
             <p>Hour ~21 (3:53pm) - Finally got the github hosting functional - site is live!</p>
             <p>Hour ~21 (4:05pm) - Got the css styling all smoove</p>
             <p>Hour ~22 (5:26pm) - Ko-fi payment integration completed</p>
-            <p>Next day, hour ~48 (7:56pm) - Changed directions entirely on offering. ADHD festival over here.</p>
+            <p>Next day, hour ~48 (7:56pm) - Changed directions entirely on offering - ADHD festival over here</p>
+            <p>What day is it? (4:30pm) - </p> - Ignored project for another 24 hours. Got distracted
           </div>
         </div>
       </div>
