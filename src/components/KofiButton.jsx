@@ -3,33 +3,30 @@ import { Coffee } from 'lucide-react';
 
 const KofiButton = ({ username = "timschei" }) => {
   useEffect(() => {
+    // Remove any existing Ko-fi elements
+    const existingKofi = document.getElementById('kofi-widget-overlay');
+    if (existingKofi) existingKofi.remove();
+
     const script = document.createElement('script');
     script.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
     script.async = true;
     script.onload = () => {
-      window.kofiWidgetOverlay.draw(username, {
-        'type': 'floating-chat',
-        'floating-chat.donateButton.text': 'Support This Experiment ($25)',
-        'floating-chat.donateButton.background-color': '#3b82f6',
-        'floating-chat.donateButton.text-color': '#ffffff',
-        'floating-chat.visible': false
+      window.kofiWidgetOverlay?.draw(username, {
+        'type': 'popup',  // Changed to popup type
+        'trigger.type': 'manual'
       });
     };
     document.body.appendChild(script);
 
     return () => {
+      const kofiElements = document.querySelectorAll('[id^="kofi"]');
+      kofiElements.forEach(el => el.remove());
       document.body.removeChild(script);
-      const kofiIframe = document.getElementById('kofi-widget-overlay');
-      if (kofiIframe) {
-        kofiIframe.remove();
-      }
     };
   }, [username]);
 
   const handleKofiClick = () => {
-    if (window.kofiWidgetOverlay) {
-      window.kofiWidgetOverlay.toggleFloatingChat();
-    }
+    window.kofiWidgetOverlay?.toggleFloatingChat();
   };
 
   return (
