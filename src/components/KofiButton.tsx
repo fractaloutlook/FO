@@ -3,24 +3,20 @@ import { Coffee } from 'lucide-react';
 
 const KofiButton = ({ username = "timschei" }) => {
   useEffect(() => {
-    // Load the Ko-fi widget script
     const script = document.createElement('script');
     script.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
     script.async = true;
     script.onload = () => {
-      // Initialize the widget once the script is loaded, but hide the default button
       window.kofiWidgetOverlay.draw(username, {
         'type': 'floating-chat',
         'floating-chat.donateButton.text': 'Support This Experiment ($25)',
         'floating-chat.donateButton.background-color': '#3b82f6',
         'floating-chat.donateButton.text-color': '#ffffff',
-        'floating-chat.core.button.position.mobile': 'hidden',
-        'floating-chat.core.button.position.desktop': 'hidden'
+        'floating-chat.visible': false
       });
     };
     document.body.appendChild(script);
 
-    // Cleanup on component unmount
     return () => {
       document.body.removeChild(script);
       const kofiIframe = document.getElementById('kofi-widget-overlay');
@@ -31,7 +27,6 @@ const KofiButton = ({ username = "timschei" }) => {
   }, [username]);
 
   const handleKofiClick = () => {
-    // Manually trigger the Ko-fi overlay
     if (window.kofiWidgetOverlay) {
       window.kofiWidgetOverlay.toggleFloatingChat();
     }
