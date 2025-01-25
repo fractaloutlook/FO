@@ -1,32 +1,29 @@
 import React, { useEffect } from 'react';
 import { Coffee } from 'lucide-react';
 
-const KofiButton = ({ username = "timschei" }) => {
+const KofiButton = () => {
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
     script.async = true;
-    
-    script.onload = () => {
-      window.kofiWidgetOverlay?.draw(username, {
-        'type': 'popup',
-        'trigger': 'manual',
-        'button.text': 'Support This Experiment ($25)',
-        'popup.title': 'Support This Experiment'
-      });
-    };
-    
     document.body.appendChild(script);
 
-    return () => {
-      const elements = document.querySelectorAll('[id^="kofi"]');
-      elements.forEach(el => el.remove());
-      document.body.removeChild(script);
+    script.onload = () => {
+      window.kofiWidgetOverlay.draw('timschei', {
+        'type': 'floating-chat',
+        'floating-chat.donateButton.text': 'Support This Experiment ($25)',
+        'floating-chat.donateButton.background-color': '#3b82f6',
+        'floating-chat.donateButton.text-color': '#fff'
+      });
     };
-  }, [username]);
+
+    return () => {
+      if (script.parentNode) script.parentNode.removeChild(script);
+    };
+  }, []);
 
   const handleClick = () => {
-    window.kofiWidgetOverlay?.openPopup();  // Changed from toggleFloatingChat to openPopup
+    window.kofiWidgetOverlay?.toggleFloatingChat();
   };
 
   return (
