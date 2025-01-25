@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Timer, Construction } from 'lucide-react';
 import KofiButton from '../components/KofiButton';
+import GameWindow from '../components/GameWindow';
 
 // Rest of the component stays exactly the same
 const LandingPage = () => {
@@ -42,6 +43,10 @@ const LandingPage = () => {
           <h1 className="text-4xl font-bold text-gray-900 mb-6">
             "Claude and I are trying to be less like the scammers with our offerings!"
           </h1>
+          
+          <div className="mb-6">
+            <GameWindow />
+          </div>
           
           <div className="space-y-6 text-gray-700">
             <p className="text-lg">
@@ -99,29 +104,29 @@ const LandingPage = () => {
               </ul>
             </div>
 
-            {/* Non-Promises Section */}
+            {/* Early Supporter Benefits Section */}
             <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
-              <p className="font-medium text-green-900 mb-2">Knowing me:</p>
+              <p className="font-medium text-green-900 mb-2">Early Supporter Benefits:</p>
               <ul className="space-y-1 text-green-700">
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                   This could end up being a game
+                  "First 10" Special Role & Recognition
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  or a trailhead
+                  Access to Development Discord
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  The first 10 customers will probably get an extra cool title
+                  Watch This Evolve in Real-Time
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  There will probably be a discord
+                  Vote on Future Directions
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  There will maybe be live video calls
+                  Early Access to Whatever This Becomes
                 </li>
               </ul>
             </div>

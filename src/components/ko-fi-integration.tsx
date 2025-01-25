@@ -1,7 +1,7 @@
 import React from 'react';
 import { Coffee } from 'lucide-react';
 
-const KofiButton = ({ username = "fractaloutlook" }) => {
+const KofiButton = ({ username = "timschei" }) => {
   const handleKofiClick = () => {
     window.open(`https://ko-fi.com/${username}`, '_blank');
   };
