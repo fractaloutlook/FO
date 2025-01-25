@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Timer, Construction } from 'lucide-react';
 import KofiButton from '../components/KofiButton';
-import GameWindow from '../components/GameWindow';
+//import GameWindow from '../components/GameWindow';
 
 // Rest of the component stays exactly the same
 const LandingPage = () => {
@@ -44,9 +44,9 @@ const LandingPage = () => {
             "Claude and I are trying to be less like the scammers with our offerings!"
           </h1>
           
-          <div className="mb-6">
+          {/*<div className="mb-6">
             <GameWindow />
-          </div>
+          </div>*/}
           
           <div className="space-y-6 text-gray-700">
             <p className="text-lg">
