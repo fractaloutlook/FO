@@ -8,12 +8,14 @@ const KofiButton = ({ username = "timschei" }) => {
     script.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
     script.async = true;
     script.onload = () => {
-      // Initialize the widget once the script is loaded
+      // Initialize the widget once the script is loaded, but hide the default button
       window.kofiWidgetOverlay.draw(username, {
         'type': 'floating-chat',
         'floating-chat.donateButton.text': 'Support This Experiment ($25)',
-        'floating-chat.donateButton.background-color': '#3b82f6', // Tailwind blue-500
-        'floating-chat.donateButton.text-color': '#ffffff'
+        'floating-chat.donateButton.background-color': '#3b82f6',
+        'floating-chat.donateButton.text-color': '#ffffff',
+        'floating-chat.core.button.position.mobile': 'hidden',
+        'floating-chat.core.button.position.desktop': 'hidden'
       });
     };
     document.body.appendChild(script);
@@ -21,7 +23,6 @@ const KofiButton = ({ username = "timschei" }) => {
     // Cleanup on component unmount
     return () => {
       document.body.removeChild(script);
-      // Remove the Ko-fi iframe if it exists
       const kofiIframe = document.getElementById('kofi-widget-overlay');
       if (kofiIframe) {
         kofiIframe.remove();
@@ -30,7 +31,7 @@ const KofiButton = ({ username = "timschei" }) => {
   }, [username]);
 
   const handleKofiClick = () => {
-    // Trigger the Ko-fi overlay
+    // Manually trigger the Ko-fi overlay
     if (window.kofiWidgetOverlay) {
       window.kofiWidgetOverlay.toggleFloatingChat();
     }

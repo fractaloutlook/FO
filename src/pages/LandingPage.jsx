@@ -157,6 +157,7 @@ const LandingPage = () => {
             <p>Hour ~21 (3:53pm) - Finally got the github hosting functional - site is live!</p>
             <p>Hour ~21 (4:05pm) - Got the css styling all smoove</p>
             <p>Hour ~22 (5:26pm) - Ko-fi payment integration completed</p>
+            <p>Next day, hour ~48 (7:56pm) - Changed directions entirely on offering. ADHD festival over here.</p>
           </div>
         </div>
       </div>
