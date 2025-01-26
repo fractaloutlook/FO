@@ -3,7 +3,6 @@ import { Timer, Construction } from 'lucide-react';
 import KofiButton from '../components/KofiButton';
 import StatusUpdates from '../components/StatusUpdates';
 import AdminControls from '../components/AdminControls';
-import StatusUpdates from '../components/StatusUpdates';
 
 const LandingPage = () => {
   const [timeElapsed, setTimeElapsed] = useState('');
