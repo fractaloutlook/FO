@@ -3,18 +3,31 @@ import { Coffee } from 'lucide-react';
 
 const KofiButton = () => {
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://ko-fi.com/widgets/widget_2.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      if (script.parentNode) script.parentNode.removeChild(script);
-    };
+    if (!window.kofiWidgetOverlay) {
+      const script = document.createElement('script');
+      script.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
+      script.async = true;
+      
+      script.onload = () => {
+        if (window.kofiWidgetOverlay) {
+          window.kofiWidgetOverlay.draw('timschei', {
+            'type': 'floating-chat',
+            'floating-chat.donateButton.text': 'Support This Experiment ($25)',
+            'floating-chat.donateButton.background-color': '#3b82f6',
+            'floating-chat.donateButton.text-color': '#fff'
+          });
+        }
+      };
+      
+      document.body.appendChild(script);
+    }
   }, []);
 
-  const handleClick = () => {
-    window.open('https://ko-fi.com/timschei/checkout?custom_description=Support This Experiment ($25)&amount=25', '_blank');
+  const handleClick = (e) => {
+    e.preventDefault();
+    if (window.kofiWidgetOverlay && window.kofiWidgetOverlay.toggleFloatingChat) {
+      window.kofiWidgetOverlay.toggleFloatingChat();
+    }
   };
 
   return (
