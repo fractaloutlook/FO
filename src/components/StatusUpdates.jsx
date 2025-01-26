@@ -47,7 +47,7 @@ const StatusUpdates = () => {
           <AlertCircle size={18} className="text-blue-500" />
           <h3 className="font-medium text-gray-900">Current Status:</h3>
         </div>
-        <p className="text-gray-700">{currentStatus || "No current status"}</p>
+        <p className="text-gray-700">{currentStatus || "Working on these status boxes!"}</p> {/* "no current status" */}
       </div>
 
       {/* Updates Log */}
