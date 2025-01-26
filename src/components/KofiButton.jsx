@@ -1,37 +1,74 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Coffee } from 'lucide-react';
 
 const KofiButton = () => {
+  const [isWidgetReady, setWidgetReady] = useState(false);
+
   useEffect(() => {
-    // Only load the script if it hasn't been loaded yet
-    if (!window.kofiWidgetOverlay) {
+    // Helper function to initialize the widget
+    const initializeWidget = () => {
+      if (window.kofiWidgetOverlay) {
+        console.log('Initializing Ko-fi widget...');
+        try {
+          window.kofiWidgetOverlay.draw('timschei', {
+            'type': 'floating-chat',
+            'floating-chat.donateButton.text': 'Support This Experiment ($25)',
+            'floating-chat.donateButton.background-color': '#3b82f6',
+            'floating-chat.donateButton.text-color': '#fff',
+            'floating-chat.core.button.text': 'Support This Experiment ($25)',
+            'floating-chat.core.position.right': '50%',
+            'floating-chat.core.position.bottom': '50%'
+          });
+          setWidgetReady(true);
+          console.log('Widget initialized successfully');
+        } catch (error) {
+          console.error('Error initializing widget:', error);
+        }
+      } else {
+        console.log('Widget not available yet');
+      }
+    };
+
+    // Only load the script if it hasn't been loaded
+    if (!document.querySelector('script[src*="ko-fi.com"]')) {
+      console.log('Loading Ko-fi script...');
       const script = document.createElement('script');
       script.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
       script.async = true;
       
       script.onload = () => {
-        // Initialize with popup mode instead of floating-chat
-        window.kofiWidgetOverlay.draw('timschei', {
-          'type': 'popup-modal',
-          'modal.background-color': '#ffffff',
-          'modal.text-color': '#323842'
-        });
+        console.log('Script loaded, waiting for widget...');
+        // Give a small delay for the widget to initialize
+        setTimeout(initializeWidget, 500);
       };
       
       document.body.appendChild(script);
+    } else {
+      // Script already exists, try to initialize
+      console.log('Script already exists, trying to initialize...');
+      initializeWidget();
     }
+
+    return () => {
+      setWidgetReady(false);
+    };
   }, []);
 
   const handleClick = (e) => {
     e.preventDefault();
-    // Use the showModal method for popup mode
-    if (window.kofiWidgetOverlay && window.kofiWidgetOverlay.getOpenedModal) {
-      const modal = window.kofiWidgetOverlay.getOpenedModal();
-      if (modal) {
-        modal.show();
-      } else {
-        window.kofiWidgetOverlay.showModal();
+    console.log('Button clicked');
+    console.log('Widget ready:', isWidgetReady);
+    console.log('Widget object:', window.kofiWidgetOverlay);
+    
+    if (window.kofiWidgetOverlay && window.kofiWidgetOverlay.toggleFloatingChat) {
+      console.log('Attempting to toggle chat...');
+      try {
+        window.kofiWidgetOverlay.toggleFloatingChat();
+      } catch (error) {
+        console.error('Error toggling chat:', error);
       }
+    } else {
+      console.log('Widget or toggle method not available');
     }
   };
 
