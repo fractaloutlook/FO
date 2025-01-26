@@ -1,48 +1,81 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Coffee } from 'lucide-react';
 
 const KofiButton = () => {
-  const buttonContainerRef = useRef(null);
+  // Track whether the widget is ready
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    // Only proceed if we have our container
-    if (!buttonContainerRef.current) return;
-
-    // Create and configure the Ko-fi button script
-    const script = document.createElement('script');
-    script.src = 'https://storage.ko-fi.com/cdn/widget/Widget_2.js';
-    script.type = 'text/javascript';
-
-    script.onload = () => {
-      if (window.kofiwidget2) {
-        window.kofiwidget2.init('Support This Experiment', '#3b82f6', 'timschei');
-        window.kofiwidget2.draw(buttonContainerRef.current, {
-          type: 'floating-chat',
-          'floating-chat.donateButton.text': 'Support This Experiment ($25)',
-          'floating-chat.donateButton.background-color': '#3b82f6',
-          'floating-chat.donateButton.text-color': '#fff'
-        });
-      }
+    // Store the widget configuration so it's accessible in the global scope
+    window.kofiConfig = {
+      'type': 'popup-modal',
+      'modal.text': 'Support This Experiment ($25)',
+      'modal.background-color': '#ffffff',
+      'modal.text-color': '#323842'
     };
 
-    document.body.appendChild(script);
+    // Only load if we haven't already
+    if (!document.querySelector('script[src*="overlay-widget.js"]')) {
+      const script = document.createElement('script');
+      script.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
+      script.async = true;
+      
+      script.onload = () => {
+        // Wait a brief moment for the widget to be ready
+        setTimeout(() => {
+          if (window.kofiWidgetOverlay) {
+            // Initialize without any floating button
+            window.kofiWidgetOverlay.draw('timschei', {
+              ...window.kofiConfig,
+              'floating-chat.visible': false
+            });
+            setIsInitialized(true);
+          }
+        }, 100);
+      };
+      
+      document.body.appendChild(script);
+    }
 
     // Cleanup
     return () => {
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
+      delete window.kofiConfig;
+      setIsInitialized(false);
     };
   }, []);
 
+  const handleClick = (e) => {
+    e.preventDefault();
+    
+    // If not initialized, try to initialize now
+    if (!isInitialized && window.kofiWidgetOverlay) {
+      window.kofiWidgetOverlay.draw('timschei', window.kofiConfig);
+      setIsInitialized(true);
+    }
+    
+    // Show the donation interface
+    if (window.kofiWidgetOverlay) {
+      // Delay slightly to ensure modal is ready
+      setTimeout(() => {
+        try {
+          window.kofiWidgetOverlay.showModal();
+        } catch (error) {
+          // If showModal fails, try to reinitialize and show
+          window.kofiWidgetOverlay.draw('timschei', window.kofiConfig);
+          setTimeout(() => window.kofiWidgetOverlay.showModal(), 50);
+        }
+      }, 50);
+    }
+  };
+
   return (
-    <div className="w-full" ref={buttonContainerRef}>
-      {/* Fallback button that will be replaced by Ko-fi's button */}
-      <button className="w-full bg-blue-500 hover:bg-blue-600 text-white py-4 px-6 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors">
-        <Coffee size={20} />
-        <span>Support This Experiment ($25)</span>
-      </button>
-    </div>
+    <button
+      onClick={handleClick}
+      className="w-full bg-blue-500 hover:bg-blue-600 text-white py-4 px-6 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors"
+    >
+      <Coffee size={20} />
+      <span>Support This Experiment ($25)</span>
+    </button>
   );
 };
 
