@@ -4,27 +4,17 @@ import { Coffee } from 'lucide-react';
 const KofiButton = () => {
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
+    script.src = 'https://ko-fi.com/widgets/widget_2.js';
     script.async = true;
     document.body.appendChild(script);
 
-    script.onload = () => {
-      window.kofiWidgetOverlay.draw('timschei', {
-        'type': 'popup',
-        'trigger-type': 'custom-button'
-      });
-    };
-
     return () => {
       if (script.parentNode) script.parentNode.removeChild(script);
-      delete window.kofiWidgetOverlay;
     };
   }, []);
 
   const handleClick = () => {
-    if (window.kofiWidgetOverlay) {
-      window.kofiWidgetOverlay.drawIframe();
-    }
+    window.open('https://ko-fi.com/timschei/checkout?custom_description=Support This Experiment ($25)&amount=25', '_blank');
   };
 
   return (
