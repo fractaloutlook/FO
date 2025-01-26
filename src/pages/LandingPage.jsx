@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Timer, Construction } from 'lucide-react';
 import KofiButton from '../components/KofiButton';
 import StatusUpdates from '../components/StatusUpdates';
+import AdminControls from '../components/AdminControls';
+import StatusUpdates from '../components/StatusUpdates';
 
 const LandingPage = () => {
   const [timeElapsed, setTimeElapsed] = useState('');
@@ -98,7 +100,7 @@ const LandingPage = () => {
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  It will probably change direction a zillion times
+                  It will probably change directions a zillion times
                 </li>
               </ul>
             </div>
