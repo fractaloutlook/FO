@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle } from 'lucide-react';
-import { SpacetimeDBClient } from '@clockworklabs/spacetimedb-sdk';
+import { Client as SpacetimeDBClient } from '@clockworklabs/spacetimedb-sdk';
 
 // Import our generated types
 import { CurrentStatus } from '../module_bindings/current_status_table';
