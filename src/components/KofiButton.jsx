@@ -1,81 +1,80 @@
-import React, { useEffect, useState } from 'react';
-import { Coffee } from 'lucide-react';
+import React, { useState } from 'react';
+import { Coffee, X } from 'lucide-react';
 
 const KofiButton = () => {
-  // Track whether the widget is ready
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    // Store the widget configuration so it's accessible in the global scope
-    window.kofiConfig = {
-      'type': 'popup-modal',
-      'modal.text': 'Support This Experiment ($25)',
-      'modal.background-color': '#ffffff',
-      'modal.text-color': '#323842'
-    };
+  // Helper function to construct the Ko-fi iframe URL with our parameters
+  const getKofiUrl = () => {
+    const baseUrl = 'https://ko-fi.com/timschei';
+    const params = new URLSearchParams({
+      'hidefeed': 'true',
+      'widget': 'true',
+      'embed': 'true',
+      'donation_amount': '25',
+      'title': 'Support This Experiment'
+    });
+    return `${baseUrl}/?${params.toString()}`;
+  };
 
-    // Only load if we haven't already
-    if (!document.querySelector('script[src*="overlay-widget.js"]')) {
-      const script = document.createElement('script');
-      script.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
-      script.async = true;
-      
-      script.onload = () => {
-        // Wait a brief moment for the widget to be ready
-        setTimeout(() => {
-          if (window.kofiWidgetOverlay) {
-            // Initialize without any floating button
-            window.kofiWidgetOverlay.draw('timschei', {
-              ...window.kofiConfig,
-              'floating-chat.visible': false
-            });
-            setIsInitialized(true);
-          }
-        }, 100);
-      };
-      
-      document.body.appendChild(script);
-    }
-
-    // Cleanup
-    return () => {
-      delete window.kofiConfig;
-      setIsInitialized(false);
-    };
-  }, []);
-
-  const handleClick = (e) => {
+  const handleButtonClick = (e) => {
     e.preventDefault();
-    
-    // If not initialized, try to initialize now
-    if (!isInitialized && window.kofiWidgetOverlay) {
-      window.kofiWidgetOverlay.draw('timschei', window.kofiConfig);
-      setIsInitialized(true);
-    }
-    
-    // Show the donation interface
-    if (window.kofiWidgetOverlay) {
-      // Delay slightly to ensure modal is ready
-      setTimeout(() => {
-        try {
-          window.kofiWidgetOverlay.showModal();
-        } catch (error) {
-          // If showModal fails, try to reinitialize and show
-          window.kofiWidgetOverlay.draw('timschei', window.kofiConfig);
-          setTimeout(() => window.kofiWidgetOverlay.showModal(), 50);
-        }
-      }, 50);
-    }
+    setIsModalOpen(true);
+    // Prevent scrolling when modal is open
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    // Restore scrolling
+    document.body.style.overflow = 'unset';
   };
 
   return (
-    <button
-      onClick={handleClick}
-      className="w-full bg-blue-500 hover:bg-blue-600 text-white py-4 px-6 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors"
-    >
-      <Coffee size={20} />
-      <span>Support This Experiment ($25)</span>
-    </button>
+    <>
+      {/* Main button */}
+      <button
+        onClick={handleButtonClick}
+        className="w-full bg-blue-500 hover:bg-blue-600 text-white py-4 px-6 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors"
+      >
+        <Coffee size={20} />
+        <span>Support This Experiment ($25)</span>
+      </button>
+
+      {/* Modal overlay */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Dark background overlay */}
+          <div 
+            className="absolute inset-0 bg-black bg-opacity-50"
+            onClick={closeModal}
+          />
+          
+          {/* Modal content */}
+          <div className="relative bg-white rounded-lg shadow-xl w-full max-w-lg mx-4">
+            {/* Close button */}
+            <button
+              onClick={closeModal}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <X size={24} />
+            </button>
+            
+            {/* Ko-fi iframe */}
+            <div className="p-4">
+              <iframe
+                id="kofiframe"
+                src={getKofiUrl()}
+                className="w-full h-[680px]"
+                style={{ border: 'none' }}
+                title="Support This Experiment"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
