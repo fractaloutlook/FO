@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle } from 'lucide-react';
-import { SpacetimeDBClient } from '@clockworklabs/spacetimedb-sdk/dist/browser';
-
-// Import our generated types
+// Import SpaceTimeDB components we need
+import { DbConnection, TableSchema, ReducerEvent } from '@clockworklabs/spacetimedb-sdk';
+// Import our generated table types
 import { CurrentStatus } from '../module_bindings/current_status_table';
 import { UpdateLog } from '../module_bindings/update_log_table';
 import { Admin } from '../module_bindings/admin_table';
 
-// Register our tables with SpaceTimeDB
-SpacetimeDBClient.registerTables(CurrentStatus, UpdateLog, Admin);
+// Register our tables with the SDK
+DbConnection.registerTables(CurrentStatus, UpdateLog, Admin);
 
 const StatusUpdates = () => {
   const [client, setClient] = useState(null);
@@ -18,27 +18,30 @@ const StatusUpdates = () => {
 
   useEffect(() => {
     // Create and configure the client
-    const dbClient = new SpacetimeDBClient('ws://localhost:3000', 'status-module');
+    const dbClient = new DbConnection('ws://localhost:3000', 'status-module');
 
     // Set up event handlers
-    dbClient.on('connect', (token, identity) => {
-      console.log('Connected to SpaceTimeDB');
+    dbClient.onConnect((token, identity) => {
+      console.log('Connected to SpaceTimeDB with identity:', identity);
       localStorage.setItem('stdb_token', token);
       
       // Subscribe to all our tables
       dbClient.subscribe(['SELECT * FROM current_status', 'SELECT * FROM update_log', 'SELECT * FROM admin']);
     });
 
-    dbClient.on('subscribed', () => {
-      console.log('Subscription complete');
+    // When initial data sync is complete
+    dbClient.on('initialStateSync', () => {
+      console.log('Initial sync complete');
       
-      // Get initial data
-      const status = CurrentStatus.findById(0);
-      if (status) setCurrentStatus(status.message);
+      // Check if there's a current status
+      const statusRows = Array.from(CurrentStatus.all());
+      if (statusRows.length > 0) {
+        setCurrentStatus(statusRows[0].message);
+      }
 
       // Get update log, sort by timestamp descending
       const updateLog = Array.from(UpdateLog.all())
-        .sort((a, b) => b.timestamp - a.timestamp);
+        .sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
       setUpdates(updateLog);
     });
 
@@ -46,6 +49,7 @@ const StatusUpdates = () => {
     dbClient.connect();
     setClient(dbClient);
 
+    // Cleanup on unmount
     return () => {
       if (dbClient) {
         dbClient.disconnect();
@@ -57,12 +61,15 @@ const StatusUpdates = () => {
   useEffect(() => {
     if (!client) return;
 
+    // When current status is updated
     CurrentStatus.onUpdate((oldValue, newValue) => {
       setCurrentStatus(newValue.message);
     });
 
-    UpdateLog.onInsert((newUpdate) => {
-      setUpdates(prev => [newUpdate, ...prev].sort((a, b) => b.timestamp - a.timestamp));
+    // When a new update is added
+    UpdateLog.onInsert((newUpdate, event) => {
+      setUpdates(prev => [newUpdate, ...prev]
+        .sort((a, b) => Number(b.timestamp) - Number(a.timestamp)));
     });
 
   }, [client]);
@@ -85,7 +92,7 @@ const StatusUpdates = () => {
         </div>
         <div className="max-h-[300px] overflow-y-auto">
           <div className="space-y-2 p-4">
-            {updates.map((update, index) => (
+            {updates.map((update) => (
               <div key={update.update_id} className="text-sm">
                 <span className="text-gray-500">
                   {new Date(Number(update.timestamp)).toLocaleString()}:
