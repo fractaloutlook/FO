@@ -98,7 +98,7 @@ const LandingPage = () => {
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  It will probably change directions a zillion times
+                  It will probably change direction a zillion times
                 </li>
               </ul>
             </div>
