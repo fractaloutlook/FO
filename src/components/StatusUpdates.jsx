@@ -3,9 +3,9 @@ import { AlertCircle } from 'lucide-react';
 import { SpacetimeDBClient } from '@clockworklabs/spacetimedb-sdk';
 
 // Import our generated types
-import CurrentStatus from './module_bindings/current_status';
-import UpdateLog from './module_bindings/update_log';
-import Admin from './module_bindings/admin';
+import CurrentStatus from '../module_bindings/current_status';
+import UpdateLog from '../module_bindings/update_log';
+import Admin from '../module_bindings/admin';
 
 // Register our tables with SpaceTimeDB
 SpacetimeDBClient.registerTables(CurrentStatus, UpdateLog, Admin);
