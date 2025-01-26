@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Timer, Construction } from 'lucide-react';
 import KofiButton from '../components/KofiButton';
-//import GameWindow from '../components/GameWindow';
+import StatusUpdates from '../components/StatusUpdates';
 
-// Rest of the component stays exactly the same
 const LandingPage = () => {
   const [timeElapsed, setTimeElapsed] = useState('');
   const launchDate = new Date('2025-01-23T14:10:00');
@@ -43,49 +42,20 @@ const LandingPage = () => {
           <h1 className="text-4xl font-bold text-gray-900 mb-6">
             "Hey look! An honest landing page!"
           </h1>
-          
-          {/*<div className="mb-6">
-            <GameWindow />
-          </div>*/}
-          
+
           <div className="space-y-6 text-gray-700">
             <p className="text-lg">
               Hey, I'm Tim. This is a real-time experiment in asking Claude to make $25
               online without all of the nonsense false promises of teaching you to be
               a thought leader, write a novel in 20 days, make your old novel suddenly
-              a best seller or whatever the heck. The best is "How to make money with AI!" 
+              a best seller or whatever the heck. The best is "How to make money with AI!"
               These people are nonsense and 90% scammers.
 
               I don't even know what this is yet. That much is true. I think it's a game though.
             </p>
 
-            {/* Status Section */}
-            <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-              <p className="font-medium text-gray-900">Current Status:</p>
-              <ul className="mt-2 space-y-2">
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500">✓</span>
-                  Step 1: Make this landing page
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500">✓</span>
-                  Step 2: Set up Ko-fi for payments
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-blue-500">⟳</span>
-                  Step 3: Define what people get for $25
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-gray-400">○</span>
-                  Step 4: Make first sale
-                </li>
-              </ul>
-            </div>
-
-            <p className="text-lg">
-              Will this work? Probably not! But you can watch us try. 
-              Maybe Claude will figure out what we're selling before someone tries to buy it.
-            </p>
+            {/* Status Updates Component */}
+            <StatusUpdates />
 
             {/* Promises Section */}
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
@@ -132,7 +102,6 @@ const LandingPage = () => {
                 </li>
               </ul>
             </div>
-
           </div>
 
           {/* Ko-fi Integration */}
@@ -141,27 +110,9 @@ const LandingPage = () => {
           </div>
 
           <p className="text-xs text-center mt-4 text-gray-500">
-            Future Refund Policy: If you don't find whatever this becomes worth $25, 
+            Future Refund Policy: If you don't find whatever this becomes worth $25,
             I'll give you your money back if requested within 10 days of purchase.
           </p>
-        </div>
-
-        {/* Updates Section */}
-        <div className="text-center text-sm text-gray-600">
-          <p className="font-medium mb-2">Live Updates:</p>
-          <div className="space-y-1">
-            <p>Hour 0 (8:10pm): Claude made this landing page</p>
-            <p>Hour 1: Added this updates section</p>
-            <p>Hour 2: Still no idea what I'm selling</p>
-            <p>Hour 3: Fixed the styling because it looked terrible</p>
-            <p>Hour 4: Went to bed because it was late and I gotta get on a day schedule</p>
-            <p>Hour ~19 (2:47pm) - Claude started up again, made a payment system module</p>
-            <p>Hour ~21 (3:53pm) - Finally got the github hosting functional - site is live!</p>
-            <p>Hour ~21 (4:05pm) - Got the css styling all smoove</p>
-            <p>Hour ~22 (5:26pm) - Ko-fi payment integration completed</p>
-            <p>Next day, hour ~48 (7:56pm) - Changed directions entirely on offering - ADHD festival over here</p>
-            <p>What day is it? (4:30pm) - </p> - Ignored project for another 24 hours. Got distracted
-          </div>
         </div>
       </div>
     </div>
