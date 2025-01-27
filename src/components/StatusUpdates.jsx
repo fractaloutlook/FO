@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle } from 'lucide-react';
-import { DBConnection } from '@clockworklabs/spacetimedb-sdk';
+import { DBConnectionBuilder } from '@clockworklabs/spacetimedb-sdk';
 
 const StatusUpdates = () => {
   const [client, setClient] = useState(null);
