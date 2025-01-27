@@ -3,33 +3,55 @@ import { AlertCircle } from 'lucide-react';
 
 const StatusUpdates = () => {
   const [connectionStatus, setConnectionStatus] = useState('Initializing...');
+  const [client, setClient] = useState(null);
 
   useEffect(() => {
-    const initializeConnection = async () => {
+    const connectToDatabase = async () => {
       try {
-        console.log('Starting SpaceTimeDB connection setup...');
-        const { Client } = await import('@clockworklabs/spacetimedb-sdk');
-        
-        const client = new Client('wss://testnet.spacetimedb.com', 'status-module');
-        
-        client.on('connect', () => {
-          console.log('Connected!');
-          setConnectionStatus('Connected to SpaceTimeDB');
-        });
+        const { DBConnection } = await import('@clockworklabs/spacetimedb-sdk');
+        console.log('Attempting to initialize connection...');
 
-        client.on('error', (error) => {
-          console.error('Connection error:', error);
-          setConnectionStatus(`Connection error: ${error.message}`);
-        });
+        // Get an instance of DBConnection using its static builder method
+        const db = DBConnection.builder()
+          .withAddress('wss://testnet.spacetimedb.com')
+          .withModule('status-module')
+          .onConnect((token, identity) => {
+            console.log('Connected!', { token, identity });
+            setConnectionStatus('Connected!');
+            localStorage.setItem('stdb_token', token);
+          })
+          .onConnectionError((error) => {
+            console.error('Failed to connect:', error);
+            setConnectionStatus(`Connection error: ${error.message}`);
+          })
+          .onDisconnect(() => {
+            console.log('Disconnected');
+            setConnectionStatus('Disconnected');
+          })
+          .build();
 
-        client.connect();
+        // If we have a saved token, use it
+        const savedToken = localStorage.getItem('stdb_token');
+        if (savedToken) {
+          db.withToken(savedToken);
+        }
+
+        db.connect();
+        setClient(db);
+
       } catch (error) {
-        console.error('Initialization error:', error);
-        setConnectionStatus(`Initialization error: ${error.message}`);
+        console.error('Failed to initialize:', error);
+        setConnectionStatus(`Failed to initialize: ${error.message}`);
       }
     };
 
-    initializeConnection();
+    connectToDatabase();
+
+    return () => {
+      if (client) {
+        client.disconnect();
+      }
+    };
   }, []);
 
   return (
