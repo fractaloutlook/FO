@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle } from 'lucide-react';
-import * as STDB from '@clockworklabs/spacetimedb-sdk';
 import { DBConnection } from '@clockworklabs/spacetimedb-sdk';
-
-// Import our generated table types
-import { CurrentStatusTableHandle } from '../module_bindings/current_status_table';
-import { UpdateLogTableHandle } from '../module_bindings/update_log_table';
-import { AdminTableHandle } from '../module_bindings/admin_table';
 
 const StatusUpdates = () => {
   const [client, setClient] = useState(null);
@@ -17,7 +11,8 @@ const StatusUpdates = () => {
   useEffect(() => {
     console.log('Initializing SpaceTimeDB connection...');
     
-    const builder = STDB.DBConnectionBuilder()
+    // Use the static builder method
+    const builder = DBConnection.builder()
       .withAddress('wss://testnet.spacetimedb.com')
       .withModule('status-module')
       .onConnect((token, identity) => {
@@ -28,24 +23,6 @@ const StatusUpdates = () => {
       .onConnectionError((error) => {
         console.error('Connection error:', error);
         setConnectionStatus(`Connection error: ${error.message}`);
-      })
-      .onSubscriptionApplied(() => {
-        console.log('Subscription applied!');
-        const dbClient = client;
-        if (dbClient) {
-          // Get current status
-          const currentStatusTable = dbClient.db.currentStatus;
-          const statusRows = Array.from(currentStatusTable.iter());
-          if (statusRows.length > 0) {
-            setCurrentStatus(statusRows[0].message);
-          }
-
-          // Get update log
-          const updateLogTable = dbClient.db.updateLog;
-          const updateRows = Array.from(updateLogTable.iter())
-            .sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
-          setUpdates(updateRows);
-        }
       })
       .onDisconnect(() => {
         setConnectionStatus('Disconnected');
@@ -60,10 +37,20 @@ const StatusUpdates = () => {
     // Build and connect
     const dbClient = builder.build();
     
-    // Subscribe to our tables
-    dbClient.SubscriptionBuilder()
+    // Subscribe to tables
+    dbClient.subscriptionBuilder()
       .onApplied(() => {
-        console.log('Subscription applied');
+        console.log('Initial sync complete');
+        if (dbClient.db) {
+          const statusRows = Array.from(dbClient.db.currentStatus.iter());
+          if (statusRows.length > 0) {
+            setCurrentStatus(statusRows[0].message);
+          }
+
+          const updateRows = Array.from(dbClient.db.updateLog.iter())
+            .sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
+          setUpdates(updateRows);
+        }
       })
       .subscribe(['SELECT * FROM current_status', 'SELECT * FROM update_log']);
     
