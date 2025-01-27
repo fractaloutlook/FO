@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle } from 'lucide-react';
-import { EventContext, DBConnection } from '@clockworklabs/spacetimedb-sdk';
 
 const StatusUpdates = () => {
   const [connectionStatus, setConnectionStatus] = useState('Initializing...');
@@ -9,9 +8,10 @@ const StatusUpdates = () => {
   useEffect(() => {
     const initializeConnection = async () => {
       try {
-        console.log('Starting SpaceTimeDB connection setup...');
+        const sdk = await import('@clockworklabs/spacetimedb-sdk');
+        console.log('Available SDK exports:', sdk);
         
-        const connection = DBConnection.builder()
+        const connection = sdk.default
           .withAddress('wss://testnet.spacetimedb.com')
           .withModule('status-module')
           .withCallbacks({
@@ -35,7 +35,7 @@ const StatusUpdates = () => {
           connection.withToken(savedToken);
         }
 
-        connection.connect();
+        await connection.connect();
         setClient(connection);
         
       } catch (error) {
