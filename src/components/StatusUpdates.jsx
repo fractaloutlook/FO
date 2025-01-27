@@ -3,9 +3,9 @@ import { AlertCircle } from 'lucide-react';
 import * as STDB from '@clockworklabs/spacetimedb-sdk';
 
 // Import our generated table types
-import { CurrentStatus } from '../module_bindings/current_status_table';
-import { UpdateLog } from '../module_bindings/update_log_table';
-import { Admin } from '../module_bindings/admin_table';
+import { CurrentStatusTable as CurrentStatus } from '../module_bindings/current_status_table';
+import { UpdateLogTable as UpdateLog } from '../module_bindings/update_log_table';
+import { AdminTable as Admin } from '../module_bindings/admin_table';
 
 const StatusUpdates = () => {
   const [client, setClient] = useState(null);
