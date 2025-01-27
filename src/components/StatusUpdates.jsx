@@ -3,41 +3,26 @@ import { AlertCircle } from 'lucide-react';
 
 const StatusUpdates = () => {
   const [connectionStatus, setConnectionStatus] = useState('Initializing...');
-  const [client, setClient] = useState(null);
 
   useEffect(() => {
     const initializeConnection = async () => {
       try {
-        const sdk = await import('@clockworklabs/spacetimedb-sdk');
-        console.log('Available SDK exports:', sdk);
+        console.log('Starting SpaceTimeDB connection setup...');
+        const { Client } = await import('@clockworklabs/spacetimedb-sdk');
         
-        const connection = sdk.default
-          .withAddress('wss://testnet.spacetimedb.com')
-          .withModule('status-module')
-          .withCallbacks({
-            onConnect: (token, identity) => {
-              console.log('Connected with identity:', identity);
-              setConnectionStatus('Connected to SpaceTimeDB');
-              localStorage.setItem('stdb_token', token);
-            },
-            onConnectionError: (error) => {
-              console.error('Connection error:', error);
-              setConnectionStatus(`Connection error: ${error.message}`);
-            },
-            onDisconnect: () => {
-              setConnectionStatus('Disconnected');
-            }
-          })
-          .build();
-
-        const savedToken = localStorage.getItem('stdb_token');
-        if (savedToken) {
-          connection.withToken(savedToken);
-        }
-
-        await connection.connect();
-        setClient(connection);
+        const client = new Client('wss://testnet.spacetimedb.com', 'status-module');
         
+        client.on('connect', () => {
+          console.log('Connected!');
+          setConnectionStatus('Connected to SpaceTimeDB');
+        });
+
+        client.on('error', (error) => {
+          console.error('Connection error:', error);
+          setConnectionStatus(`Connection error: ${error.message}`);
+        });
+
+        client.connect();
       } catch (error) {
         console.error('Initialization error:', error);
         setConnectionStatus(`Initialization error: ${error.message}`);
@@ -45,12 +30,6 @@ const StatusUpdates = () => {
     };
 
     initializeConnection();
-
-    return () => {
-      if (client) {
-        client.disconnect();
-      }
-    };
   }, []);
 
   return (
