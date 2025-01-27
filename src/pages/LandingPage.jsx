@@ -41,7 +41,7 @@ const LandingPage = () => {
 
           {/* Main Content */}
           <h1 className="text-4xl font-bold text-gray-900 mb-6">
-            "Hey look! An honest landing page!"
+            "Hey look! Wait what? Yep!"
           </h1>
 
           <div className="space-y-6 text-gray-700">
@@ -100,6 +100,10 @@ const LandingPage = () => {
                 <li className="flex items-center gap-2">
                   <span>•</span>
                   It will probably change directions a zillion times
+                </li>
+                <li className="flex items-center gap-2">
+                  <span>•</span>
+                  I will fix the updates section and put the og updates back in it
                 </li>
               </ul>
             </div>
