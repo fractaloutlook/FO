@@ -10,6 +10,7 @@ const StatusUpdates = () => {
   useEffect(() => {
     const connectToDatabase = async () => {
       try {
+        console.log('STDB object:', STDB);
         console.log('Initializing connection...');
         
         const connection = STDB.DBConnection.builder()
