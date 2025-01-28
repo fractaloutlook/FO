@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle } from 'lucide-react';
+import * as STDB from '@clockworklabs/spacetimedb-sdk';
 
 const StatusUpdates = () => {
   const [connectionStatus, setConnectionStatus] = useState('Initializing...');
@@ -8,13 +9,12 @@ const StatusUpdates = () => {
   useEffect(() => {
     const connectToDatabase = async () => {
       try {
-        const { DBConnection } = await import('@clockworklabs/spacetimedb-sdk');
-        console.log('Attempting to initialize connection...');
-
-        // Get an instance of DBConnection using its static builder method
-        const db = DBConnection.builder()
-          .withAddress('wss://testnet.spacetimedb.com')
-          .withModule('status-module')
+        console.log('SDK object:', STDB);
+        
+        // Create connection using new SDK syntax
+        const conn = STDB.DBConnectionBuilder()
+          .withUri('wss://testnet.spacetimedb.com')
+          .withModuleName('status-module')
           .onConnect((token, identity) => {
             console.log('Connected!', { token, identity });
             setConnectionStatus('Connected!');
@@ -30,14 +30,14 @@ const StatusUpdates = () => {
           })
           .build();
 
-        // If we have a saved token, use it
+        // If we have a saved token
         const savedToken = localStorage.getItem('stdb_token');
         if (savedToken) {
-          db.withToken(savedToken);
+          conn.withToken(savedToken);
         }
 
-        db.connect();
-        setClient(db);
+        conn.connect();
+        setClient(conn);
 
       } catch (error) {
         console.error('Failed to initialize:', error);
