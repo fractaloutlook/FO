@@ -13,7 +13,7 @@ const StatusUpdates = () => {
         console.log('STDB object:', STDB);
         console.log('Initializing connection...');
         
-        const connection = STDB.DBConnection.builder()
+        const connection = new STDB.DBConnectionBuilder()
           .withUri('wss://testnet.spacetimedb.com')
           .withModuleName('status-module')
           .onConnect((conn, identity, token) => {
