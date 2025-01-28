@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle } from 'lucide-react';
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import * as STDB from '@clockworklabs/spacetimedb-sdk';
 
 const StatusUpdates = () => {
@@ -13,20 +12,17 @@ const StatusUpdates = () => {
       try {
         console.log('Initializing connection...');
         
-        // Create connection using the builder pattern
         const connection = STDB.DBConnection.builder()
-          .withUri('ws://localhost:3000')
+          .withUri('wss://testnet.spacetimedb.com')
           .withModuleName('status-module')
           .onConnect((conn, identity, token) => {
             console.log('Connected!', { identity, token });
             setConnectionStatus('Connected');
             localStorage.setItem('stdb_token', token);
             
-            // Subscribe to all tables
             conn.subscriptionBuilder()
               .onApplied((ctx) => {
                 console.log('Subscription applied!');
-                // Get current status from the table
                 const status = conn.db.currentStatus.id.find(0);
                 if (status) {
                   setStatusMessage(status.message);
@@ -44,10 +40,7 @@ const StatusUpdates = () => {
           })
           .build();
 
-        // Store reference to client
         setClient(connection);
-
-        // Initiate connection
         await connection.connect();
 
       } catch (error) {
@@ -66,19 +59,21 @@ const StatusUpdates = () => {
   }, []);
 
   return (
-    <div className="space-y-4">
-      <Alert variant={connectionStatus === 'Connected' ? 'default' : 'destructive'}>
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Status Updates</AlertTitle>
-        <AlertDescription>
-          Connection Status: {connectionStatus}
+    <div className="space-y-4 mt-8">
+      <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <AlertCircle size={18} className="text-blue-500" />
+          <h3 className="font-medium text-gray-900">Current Status:</h3>
+        </div>
+        <p className="text-gray-700">
+          {connectionStatus}
           {statusMessage && (
-            <div className="mt-2 text-sm">
-              Current Status: {statusMessage}
-            </div>
+            <span className="block mt-2">
+              Message: {statusMessage}
+            </span>
           )}
-        </AlertDescription>
-      </Alert>
+        </p>
+      </div>
     </div>
   );
 };
