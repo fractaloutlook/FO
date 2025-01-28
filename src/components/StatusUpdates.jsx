@@ -11,8 +11,8 @@ const StatusUpdates = () => {
       try {
         console.log('SDK object:', STDB);
         
-        // Create connection using new SDK syntax
-        const conn = STDB.DBConnectionBuilder()
+        // Add 'new' keyword here
+        const conn = new STDB.DBConnectionBuilder()
           .withUri('wss://testnet.spacetimedb.com')
           .withModuleName('status-module')
           .onConnect((token, identity) => {
