@@ -2,6 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { AlertCircle } from 'lucide-react';
 import * as STDB from '@clockworklabs/spacetimedb-sdk';
 
+// Define our module configuration
+const REMOTE_MODULE = {
+  tables: {
+    current_status: {
+      tableName: "current_status",
+      rowType: STDB.AlgebraicType.createProductType([
+        { name: "id", algebraicType: STDB.AlgebraicType.createU32Type() },
+        { name: "message", algebraicType: STDB.AlgebraicType.createStringType() },
+        { name: "lastUpdated", algebraicType: STDB.AlgebraicType.createU64Type() }
+      ]),
+      primaryKey: "id"
+    }
+  },
+  reducers: {
+    update_status: {
+      reducerName: "update_status",
+      argsType: STDB.AlgebraicType.createProductType([
+        { name: "newStatus", algebraicType: STDB.AlgebraicType.createStringType() }
+      ])
+    }
+  },
+  eventContextConstructor: (imp, event) => {
+    return {
+      ...imp,
+      event
+    }
+  },
+  dbViewConstructor: (connection) => {
+    return new STDB.ClientCache();
+  },
+  reducersConstructor: (connection) => {
+    return {};
+  }
+};
+
 const StatusUpdates = () => {
   const [connectionStatus, setConnectionStatus] = useState('Initializing...');
   const [statusMessage, setStatusMessage] = useState('');
@@ -13,7 +48,7 @@ const StatusUpdates = () => {
         console.log('STDB object:', STDB);
         console.log('Initializing connection...');
         
-        const connection = new STDB.DBConnectionBuilder()
+        const connection = new STDB.DBConnectionBuilder(REMOTE_MODULE, imp => imp)
           .withUri('wss://testnet.spacetimedb.com')
           .withModuleName('status-module')
           .onConnect((conn, identity, token) => {
