@@ -26,13 +26,14 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 font-sans">
+      <TestSDK />
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Timer Banner */}
         <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
           <Timer size={16} className="text-gray-500" />
           <span>Experiment started {timeElapsed} ago</span>
         </div>
-        <TestSDK />
+
         {/* Main Card */}
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-8">
           {/* Construction Banner */}

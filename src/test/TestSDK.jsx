@@ -16,7 +16,9 @@ const TestSDK = () => {
   return (
     <div>
       Check console for SDK exports
+      <TestSDK />
     </div>
+    
   );
 };
 
