@@ -76,6 +76,8 @@ const StatusUpdates = () => {
           })
           .build();
 
+        console.log('Built connection object:', connection);
+        console.log('Connection methods:', Object.getOwnPropertyNames(connection));
         setClient(connection);
         await connection.connect();
 
