@@ -51,35 +51,39 @@ const StatusUpdates = () => {
         const connection = new STDB.DBConnectionBuilder(REMOTE_MODULE, imp => imp)
           .withUri('wss://testnet.spacetimedb.com')
           .withModuleName('status-module')
-          .onConnect((conn, identity, token) => {
-            console.log('Connected!', { identity, token });
-            setConnectionStatus('Connected');
-            localStorage.setItem('stdb_token', token);
-            
-            conn.subscriptionBuilder()
-              .onApplied((ctx) => {
-                console.log('Subscription applied!');
-                const status = conn.db.currentStatus.id.find(0);
-                if (status) {
-                  setStatusMessage(status.message);
-                }
-              })
-              .subscribe(['SELECT * FROM current_status']);
-          })
-          .onConnectError((conn, error) => {
-            console.error('Connection error:', error);
-            setConnectionStatus(`Connection error: ${error.message}`);
-          })
-          .onDisconnect((conn, error) => {
-            console.log('Disconnected', error);
-            setConnectionStatus('Disconnected');
-          })
           .build();
 
-        console.log('Built connection object:', connection);
-        console.log('Connection methods:', Object.getOwnPropertyNames(connection));
+        // Set up event handlers
+        connection.on('connect', (conn, identity, token) => {
+          console.log('Connected!', { identity, token });
+          setConnectionStatus('Connected');
+          localStorage.setItem('stdb_token', token);
+          
+          conn.subscriptionBuilder()
+            .onApplied((ctx) => {
+              console.log('Subscription applied!');
+              const status = conn.db.currentStatus?.id?.find(0);
+              if (status) {
+                setStatusMessage(status.message);
+              }
+            })
+            .subscribe(['SELECT * FROM current_status']);
+        });
+
+        connection.on('connectError', (conn, error) => {
+          console.error('Connection error:', error);
+          setConnectionStatus(`Connection error: ${error.message}`);
+        });
+
+        connection.on('disconnect', (conn, error) => {
+          console.log('Disconnected', error);
+          setConnectionStatus('Disconnected');
+        });
+
         setClient(connection);
-        await connection.connect();
+        
+        // Start the connection
+        connection.connect();
 
       } catch (error) {
         console.error('Failed to initialize:', error);
