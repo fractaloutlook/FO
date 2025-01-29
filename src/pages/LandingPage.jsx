@@ -3,6 +3,8 @@ import { Timer, Construction } from 'lucide-react';
 import KofiButton from '../components/KofiButton';
 import StatusUpdates from '../components/StatusUpdates';
 import AdminControls from '../components/AdminControls';
+import TestSDK from '../test/TestSDK';
+
 
 const LandingPage = () => {
   const [timeElapsed, setTimeElapsed] = useState('');
@@ -30,7 +32,7 @@ const LandingPage = () => {
           <Timer size={16} className="text-gray-500" />
           <span>Experiment started {timeElapsed} ago</span>
         </div>
-
+        <TestSDK />
         {/* Main Card */}
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-8">
           {/* Construction Banner */}
