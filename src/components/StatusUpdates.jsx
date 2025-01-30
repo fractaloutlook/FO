@@ -39,6 +39,7 @@ const StatusUpdates = () => {
   /* ===========================================
    * ATTEMPT #3 - With Module Configuration
    * =========================================== */
+  /*
   useEffect(() => {
     const connectToDatabase = async () => {
       try {
@@ -96,5 +97,52 @@ const StatusUpdates = () => {
     </div>
   );
 };
+
+*/
+
+/* ===========================================
+   * ATTEMPT #4 - With Auth Token Handling
+   * =========================================== */
+useEffect(() => {
+  const connectToDatabase = async () => {
+    try {
+      console.log('Starting connection attempt #4');
+      
+      const savedToken = localStorage.getItem('stdb_token');
+      console.log('Saved token:', savedToken);
+      
+      const moduleConfig = {
+        tables: {},
+        reducers: {},
+        eventContextConstructor: (imp, event) => ({ ...imp, event }),
+        dbViewConstructor: (conn) => ({}),
+        reducersConstructor: (conn) => ({})
+      };
+
+      // Create builder with required params
+      const builder = new STDB.DBConnectionBuilder(
+        moduleConfig,
+        imp => imp
+      );
+      console.log('Builder created:', builder);
+      
+      // Build with auth token if we have one
+      const connection = builder
+        .withUri('wss://testnet.spacetimedb.com')
+        .withModuleName('status-module')
+        .withCredentials(savedToken ? [new STDB.Identity(savedToken), savedToken] : undefined)
+        .build();
+        
+      console.log('Connection built:', connection);
+
+    } catch (error) {
+      console.error('Failed to initialize:', error);
+      setConnectionStatus(`Error: ${error.message}`);
+    }
+  };
+
+  connectToDatabase();
+}, []);
+
 
 export default StatusUpdates;
