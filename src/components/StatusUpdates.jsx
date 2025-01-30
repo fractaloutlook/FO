@@ -130,8 +130,12 @@ useEffect(() => {
       const connection = builder
         .withUri('wss://testnet.spacetimedb.com')
         .withModuleName('status-module')
-        .withCredentials(savedToken ? [new STDB.Identity(savedToken), savedToken] : undefined)
-        .build();
+        // Only add credentials if we have a token
+        const conn = savedToken 
+          ? builder.withCredentials([new STDB.Identity(savedToken), savedToken])
+          : builder;
+        
+        const connection = conn.build();
         
       console.log('Connection built:', connection);
 
