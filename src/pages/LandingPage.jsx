@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Timer, Construction } from 'lucide-react';
 import KofiButton from '../components/KofiButton';
 import StatusUpdates from '../components/StatusUpdates';
-import AdminControls from '../components/AdminControls';
+import AdminControls from '../components/AdminControls.tsx';
 import TestSDK from '../test/TestSDK';
 
 
@@ -14,9 +14,10 @@ const LandingPage = () => {
     const updateTime = () => {
       const now = new Date();
       const diff = now - launchDate;
-      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      setTimeElapsed(`${hours}h ${minutes}m`);
+      setTimeElapsed(`${days}d ${hours}h ${minutes}m`);
     };
 
     updateTime();
@@ -60,6 +61,8 @@ const LandingPage = () => {
 
             {/* Status Updates Component */}
             <StatusUpdates />
+            {/* Admin Controls - Only renders for admins */}
+            <AdminControls />
 
             {/* Promises Section */}
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
