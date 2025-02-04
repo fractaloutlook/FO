@@ -44,6 +44,16 @@ const StatusUpdates = () => {
                   
                 setUpdates(allUpdates);
 
+                if (status) {
+                  setCurrentStatus({
+                    id: status.id,
+                    message: status.message, 
+                    lastUpdated: status.lastUpdated
+                  });
+                }
+              })
+              .subscribe([
+                'SELECT * FROM current_status',
                 'SELECT * FROM update_log',
                 'SELECT * FROM admin'
               ]);
