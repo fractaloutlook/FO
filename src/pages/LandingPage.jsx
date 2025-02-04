@@ -40,23 +40,27 @@ const LandingPage = () => {
           {/* Construction Banner */}
           <div className="flex items-center gap-2 mb-6 bg-yellow-50 text-yellow-800 px-4 py-2 rounded-md">
             <Construction size={16} />
-            <span className="text-sm">Currently Under Construction (sorta!)</span>
+            <span className="text-sm">Currently Under Construction (madness.)</span>
           </div>
 
           {/* Main Content */}
           <h1 className="text-4xl font-bold text-gray-900 mb-6">
-            "Hey look! Wait what? Yep!"
+            "Well there's a thing here."
           </h1>
 
           <div className="space-y-6 text-gray-700">
             <p className="text-lg">
-              Hey, I'm Tim. This is a real-time experiment in asking Claude to make $25
-              online without all of the nonsense false promises of teaching you to be
-              a thought leader, write a novel in 20 days, make your old novel suddenly
-              a best seller or whatever the heck. The best is "How to make money with AI!"
-              These people are nonsense and 90% scammers.
+              Hey, I'm Tim. This is a real-time experiment and project collaboration between
+              myself and AI to build a landing page without all of the nonsense false promises
+              of teaching you to be a thought leader, write a novel in 20 days, make your old 
+              novel suddenly a best seller or whatever the heck. The best is "How to make money 
+              with AI!" These people are nonsense.
 
               I don't even know what this is yet. That much is true. I think it's a game though.
+
+              [update 02/04/25 - My updates section below is still rather broken, so I'll put one here.
+              While I'm not sure *exactly* what this is, I can say that as of today, it's an MMO.
+              So. Welcome to that, I guess!]
             </p>
 
             {/* Status Updates Component */}
@@ -71,14 +75,16 @@ const LandingPage = () => {
                 <li className="flex items-center gap-2">
                   <span>•</span>
                   Total transparency about this experiment
+                  (except for the parts that are secret)
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  Regular updates as Claude figures this out
+                  Regular updates as we figure this out
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  No fake scarcity or "only 3 spots left!" nonsense — any scarcity mentioned will be REAL.
+                  No fake scarcity or "only 3 spots left!" nonsense
+                  Any scarcity mentioned will be REAL
                 </li>
               </ul>
             </div>
@@ -89,11 +95,11 @@ const LandingPage = () => {
               <ul className="space-y-1 text-green-700">
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  This might be a game
+                  This might be a game (currently 90% chance)
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  or a trailhead?
+                  or a trailhead? (currently maybe it always was)
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
@@ -101,7 +107,7 @@ const LandingPage = () => {
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
-                  There will probably be a discord
+                  There will probably be a discord (59% chance)
                 </li>
                 <li className="flex items-center gap-2">
                   <span>•</span>
@@ -110,6 +116,7 @@ const LandingPage = () => {
                 <li className="flex items-center gap-2">
                   <span>•</span>
                   I will fix the updates section and put the og updates back in it
+                  They have not been lost
                 </li>
               </ul>
             </div>

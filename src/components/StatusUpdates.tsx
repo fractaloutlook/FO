@@ -32,14 +32,7 @@ const StatusUpdates = () => {
                 console.log('Admin check:', { adminStatus, identity });
                 setIsAdmin(!!adminStatus);
                 
-                const status = conn.db.currentStatus.id.find(0);
-                if (status) {
-                  setCurrentStatus({
-                    id: status.id,
-                    message: status.message, 
-                    lastUpdated: status.lastUpdated
-                  });
-                }
+
 
                 const allUpdates = Array.from(conn.db.updateLog.iter())
                   .map(update => ({
@@ -50,9 +43,7 @@ const StatusUpdates = () => {
                   .sort((a, b) => Number(b.timestamp - a.timestamp));
                   
                 setUpdates(allUpdates);
-              })
-              .subscribe([
-                'SELECT * FROM current_status',
+
                 'SELECT * FROM update_log',
                 'SELECT * FROM admin'
               ]);
