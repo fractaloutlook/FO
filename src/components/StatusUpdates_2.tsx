@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { DBConnection } from '../module_bindings';
 import AdminControls from './AdminControls';
@@ -9,39 +9,54 @@ const StatusUpdates = () => {
   const [currentStatus, setCurrentStatus] = useState(null);
   const [updates, setUpdates] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [connection, setConnection] = useState(null);
-
+  const [connection, setConnection] = useState(null); // Store connection in state instead of ref
+  
   useEffect(() => {
-    const initializeConnection = async () => {
+    const initialize = async () => {
       try {
         const conn = await DBConnection.builder()
           .withUri('ws://localhost:3000')
           .withModuleName('status-module')
-          .onConnect((connectedConn, identity, token) => {
-            console.log('Connected with connection object:', connectedConn);
-            setConnection(connectedConn);
-            localStorage.setItem('auth_token', token); // Consider environment variables instead
+          .onConnect((conn, identity, token) => {
+            console.log('Connected with connection object:', conn);
+            setConnection(conn); // Save connection in state
+            localStorage.setItem('auth_token', token);
             setIsConnected(true);
             setStatusMessage('Connected');
 
-            connectedConn.subscriptionBuilder()
-              .onApplied(() => {
-                console.log('Subscription applied');
-
-                const adminStatus = connectedConn.db.admin.identity.find(identity);
+            conn.subscriptionBuilder()
+              .onApplied((ctx) => {
+                console.log('Subscription applied, current connection:', conn);
+                
+                const adminStatus = conn.db.admin.identity.find(identity);
                 console.log('Admin check:', { adminStatus, identity });
                 setIsAdmin(!!adminStatus);
+                
 
-                const fetchedUpdates = Array.from(connectedConn.db.updateLog.iter())
+
+                const allUpdates = Array.from(conn.db.updateLog.iter())
                   .map(update => ({
                     message: update.message,
                     timestamp: update.timestamp,
-                    updateId: update.updateId,
+                    updateId: update.updateId
                   }))
                   .sort((a, b) => Number(b.timestamp - a.timestamp));
+                  
+                setUpdates(allUpdates);
 
-                setUpdates(fetchedUpdates);
-              });
+                if (status) {
+                  setCurrentStatus({
+                    id: status.id,
+                    message: status.message, 
+                    lastUpdated: status.lastUpdated
+                  });
+                }
+              })
+              .subscribe([
+                'SELECT * FROM current_status',
+                'SELECT * FROM update_log',
+                'SELECT * FROM admin'
+              ]);
           })
           .onConnectError((_, error) => {
             console.error('Connection error:', error);
@@ -55,42 +70,35 @@ const StatusUpdates = () => {
           })
           .build();
 
+        // Set up table update handlers
         conn.db.currentStatus.onUpdate((_, newStatus) => {
           console.log('Status update received:', newStatus);
           setCurrentStatus({
             id: newStatus.id,
             message: newStatus.message,
-            lastUpdated: newStatus.lastUpdated,
+            lastUpdated: newStatus.lastUpdated
           });
         });
 
-        conn.db.updateLog.onInsert(newUpdate => {
+        conn.db.updateLog.onInsert((newUpdate) => {
           console.log('New update received:', newUpdate);
-          setUpdates(prev => [
-            ...prev,
-            {
-              message: newUpdate.message,
-              timestamp: newUpdate.timestamp,
-              updateId: newUpdate.updateId,
-            },
-          ].sort((a, b) => Number(b.timestamp - a.timestamp)));
+          setUpdates(prev => [...prev, {
+            message: newUpdate.message,
+            timestamp: newUpdate.timestamp,
+            updateId: newUpdate.updateId
+          }].sort((a, b) => Number(b.timestamp - a.timestamp)));
         });
 
-        // Teardown routine on component unmount
-        return () => {
-          conn.close(); // Close the connection
-          setCurrentStatus(null); // Reset current status
-          setUpdates([]); // Clear updates
-        };
       } catch (error) {
         console.error('Failed to initialize connection:', error);
         setStatusMessage(`Failed to connect: ${error.message}`);
       }
     };
 
-    initializeConnection();
+    initialize();
   }, []);
 
+  // Debug log when connection or admin status changes
   useEffect(() => {
     console.log('Connection or admin status changed:', { connection, isAdmin });
   }, [connection, isAdmin]);
@@ -104,7 +112,9 @@ const StatusUpdates = () => {
         </div>
         <p className="text-gray-700">{statusMessage}</p>
         {isAdmin && (
-          <p className="text-sm text-green-600 mt-2 font-medium">🔐 Admin access enabled</p>
+          <p className="text-sm text-green-600 mt-2 font-medium">
+            🔐 Admin access enabled
+          </p>
         )}
       </div>
 
@@ -113,7 +123,7 @@ const StatusUpdates = () => {
           <h4 className="font-medium text-gray-900 mb-2">Current Status:</h4>
           <p className="text-gray-800">{currentStatus.message}</p>
           <p className="text-sm text-gray-600 mt-1">
-            Last updated: {new Date(Number(currentStatus.lastUpdated) / 1000).toLocaleString()}
+            Last updated: {new Date(Number(currentStatus.lastUpdated)/1000).toLocaleString()}
           </p>
         </div>
       )}
@@ -123,13 +133,13 @@ const StatusUpdates = () => {
           <h4 className="font-medium text-gray-900 mb-4">Recent Updates:</h4>
           <div className="space-y-3">
             {updates.map(update => (
-              <div
-                key={update.updateId.toString()}
+              <div 
+                key={update.updateId.toString()} 
                 className="p-3 bg-gray-50 rounded-lg border border-gray-200"
               >
                 <p className="text-gray-800">{update.message}</p>
                 <p className="text-sm text-gray-500 mt-1">
-                  {new Date(Number(update.timestamp) / 1000).toLocaleString()}
+                  {new Date(Number(update.timestamp)/1000).toLocaleString()}
                 </p>
               </div>
             ))}
@@ -137,12 +147,15 @@ const StatusUpdates = () => {
         </div>
       )}
 
+      {/* Only render AdminControls if we have both admin access and a valid connection */}
       {isAdmin && connection && (
         <AdminControls connection={connection} />
       )}
 
+      {/* Debug info */}
       <div className="text-xs text-gray-500">
-        Admin: {isAdmin ? 'Yes' : 'No'} | Connection: {connection ? 'Active' : 'None'}
+        Admin: {isAdmin ? 'Yes' : 'No'} | 
+        Connection: {connection ? 'Active' : 'None'}
       </div>
     </div>
   );

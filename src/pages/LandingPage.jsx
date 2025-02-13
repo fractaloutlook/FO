@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Timer, Construction } from 'lucide-react';
 import KofiButton from '../components/KofiButton';
-import StatusUpdates from '../components/StatusUpdates';
+import StatusUpdates from '../components/StatusUpdates.tsx';
 import AdminControls from '../components/AdminControls.tsx';
 import TestSDK from '../test/TestSDK';
 
