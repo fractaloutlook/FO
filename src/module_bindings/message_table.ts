@@ -39,24 +39,24 @@ import {
   // @ts-ignore
   deepEqual,
 } from "@clockworklabs/spacetimedb-sdk";
-import { UpdateLog } from "./update_log_type";
+import { Message } from "./message_type";
 // @ts-ignore
 import { EventContext, Reducer, RemoteReducers, RemoteTables } from ".";
 
 /**
- * Table handle for the table `update_log`.
+ * Table handle for the table `message`.
  *
- * Obtain a handle from the [`updateLog`] property on [`RemoteTables`],
- * like `ctx.db.updateLog`.
+ * Obtain a handle from the [`message`] property on [`RemoteTables`],
+ * like `ctx.db.message`.
  *
  * Users are encouraged not to explicitly reference this type,
  * but to directly chain method calls,
- * like `ctx.db.updateLog.on_insert(...)`.
+ * like `ctx.db.message.on_insert(...)`.
  */
-export class UpdateLogTableHandle {
-  tableCache: TableCache<UpdateLog>;
+export class MessageTableHandle {
+  tableCache: TableCache<Message>;
 
-  constructor(tableCache: TableCache<UpdateLog>) {
+  constructor(tableCache: TableCache<Message>) {
     this.tableCache = tableCache;
   }
 
@@ -64,23 +64,23 @@ export class UpdateLogTableHandle {
     return this.tableCache.count();
   }
 
-  iter(): Iterable<UpdateLog> {
+  iter(): Iterable<Message> {
     return this.tableCache.iter();
   }
 
-  onInsert = (cb: (ctx: EventContext, row: UpdateLog) => void) => {
+  onInsert = (cb: (ctx: EventContext, row: Message) => void) => {
     return this.tableCache.onInsert(cb);
   }
 
-  removeOnInsert = (cb: (ctx: EventContext, row: UpdateLog) => void) => {
+  removeOnInsert = (cb: (ctx: EventContext, row: Message) => void) => {
     return this.tableCache.removeOnInsert(cb);
   }
 
-  onDelete = (cb: (ctx: EventContext, row: UpdateLog) => void) => {
+  onDelete = (cb: (ctx: EventContext, row: Message) => void) => {
     return this.tableCache.onDelete(cb);
   }
 
-  removeOnDelete = (cb: (ctx: EventContext, row: UpdateLog) => void) => {
+  removeOnDelete = (cb: (ctx: EventContext, row: Message) => void) => {
     return this.tableCache.removeOnDelete(cb);
   }
 }

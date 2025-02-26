@@ -1,73 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Pencil, Send } from 'lucide-react';
-import type { DBConnection } from '../module_bindings';
 
-interface AdminControlsProps {
-  connection: any;
-}
-
-const AdminControls: React.FC<AdminControlsProps> = ({ connection }) => {
+const AdminControls = ({ connection }) => {
   const [newStatus, setNewStatus] = useState('');
   const [newUpdate, setNewUpdate] = useState('');
 
-  // Debug log when connection prop changes
-  useEffect(() => {
-    console.log('AdminControls received connection:', connection);
-    if (connection && connection.reducers) {
-      console.log('Connection has reducers:', Object.keys(connection.reducers));
-    }
-  }, [connection]);
-
-  const handleStatusUpdate = async (e: React.FormEvent) => {
+  const handleStatusUpdate = (e) => {
     e.preventDefault();
-    if (!newStatus.trim()) return;
+    if (!newStatus.trim() || !connection) return;
     
-    console.log('Attempting status update with connection:', connection);
-    if (!connection || !connection.reducers) {
-      console.error('Invalid connection object:', connection);
-      return;
-    }
-
     try {
-      await connection.reducers.updateStatus(newStatus);
-      console.log('Status update sent successfully');
+      console.log('Sending status update:', newStatus);
+      connection.reducers.updateStatus(newStatus);
       setNewStatus('');
-    } catch (err) {
-      console.error('Failed to update status:', err);
+    } catch (error) {
+      console.error('Error updating status:', error);
     }
   };
 
-  const handleAddUpdate = async (e: React.FormEvent) => {
+  const handleAddUpdate = (e) => {
     e.preventDefault();
-    if (!newUpdate.trim()) return;
-
-    console.log('Attempting to add update with connection:', connection);
-    if (!connection || !connection.reducers) {
-      console.error('Invalid connection object:', connection);
-      return;
-    }
-
+    if (!newUpdate.trim() || !connection) return;
+    
     try {
-      await connection.reducers.addUpdate(newUpdate);
-      console.log('Update added successfully');
+      console.log('Adding update:', newUpdate);
+      connection.reducers.addUpdate(newUpdate);
       setNewUpdate('');
-    } catch (err) {
-      console.error('Failed to add update:', err);
+    } catch (error) {
+      console.error('Error adding update:', error);
     }
   };
-
-  if (!connection || !connection.reducers) {
-    return (
-      <div className="fixed bottom-4 right-4 bg-red-50 text-red-700 rounded-lg border border-red-200 shadow-lg p-4">
-        Error: Invalid connection state
-      </div>
-    );
-  }
 
   return (
-    <div className="fixed bottom-4 right-4 bg-white rounded-lg border border-gray-200 shadow-lg p-4 w-96">
+    <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
       <h3 className="text-lg font-medium text-gray-900 mb-4">Admin Controls</h3>
       
+      {/* Status Update Form */}
       <form onSubmit={handleStatusUpdate} className="mb-4">
         <div className="flex gap-2">
           <input
@@ -80,12 +48,14 @@ const AdminControls: React.FC<AdminControlsProps> = ({ connection }) => {
           <button 
             type="submit"
             className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            disabled={!connection}
           >
             <Pencil size={20} />
           </button>
         </div>
       </form>
 
+      {/* Add Update Form */}
       <form onSubmit={handleAddUpdate}>
         <div className="flex gap-2">
           <input
@@ -98,6 +68,7 @@ const AdminControls: React.FC<AdminControlsProps> = ({ connection }) => {
           <button 
             type="submit"
             className="p-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+            disabled={!connection}
           >
             <Send size={20} />
           </button>

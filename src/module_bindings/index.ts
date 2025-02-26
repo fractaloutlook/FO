@@ -41,50 +41,85 @@ import {
 } from "@clockworklabs/spacetimedb-sdk";
 
 // Import and reexport all reducer arg types
+import { AddAdmin } from "./add_admin_reducer.ts";
+export { AddAdmin };
 import { AddUpdate } from "./add_update_reducer.ts";
 export { AddUpdate };
 import { Connect } from "./connect_reducer.ts";
 export { Connect };
+import { DebugAdmins } from "./debug_admins_reducer.ts";
+export { DebugAdmins };
+import { Disconnect } from "./disconnect_reducer.ts";
+export { Disconnect };
+import { ForceInit } from "./force_init_reducer.ts";
+export { ForceInit };
 import { Init } from "./init_reducer.ts";
 export { Init };
+import { SendMessage } from "./send_message_reducer.ts";
+export { SendMessage };
+import { SetName } from "./set_name_reducer.ts";
+export { SetName };
+import { TestLog } from "./test_log_reducer.ts";
+export { TestLog };
 import { UpdateStatus } from "./update_status_reducer.ts";
 export { UpdateStatus };
+import { ViewStatus } from "./view_status_reducer.ts";
+export { ViewStatus };
 
 // Import and reexport all table handle types
 import { AdminTableHandle } from "./admin_table.ts";
 export { AdminTableHandle };
 import { CurrentStatusTableHandle } from "./current_status_table.ts";
 export { CurrentStatusTableHandle };
+import { MessageTableHandle } from "./message_table.ts";
+export { MessageTableHandle };
 import { UpdateLogTableHandle } from "./update_log_table.ts";
 export { UpdateLogTableHandle };
+import { UserTableHandle } from "./user_table.ts";
+export { UserTableHandle };
 
 // Import and reexport all types
 import { Admin } from "./admin_type.ts";
 export { Admin };
 import { CurrentStatus } from "./current_status_type.ts";
 export { CurrentStatus };
+import { Message } from "./message_type.ts";
+export { Message };
 import { UpdateLog } from "./update_log_type.ts";
 export { UpdateLog };
+import { User } from "./user_type.ts";
+export { User };
 
 const REMOTE_MODULE = {
   tables: {
     admin: {
       tableName: "admin",
       rowType: Admin.getTypeScriptAlgebraicType(),
-      primaryKey: "identity",
     },
     current_status: {
       tableName: "current_status",
       rowType: CurrentStatus.getTypeScriptAlgebraicType(),
       primaryKey: "id",
     },
+    message: {
+      tableName: "message",
+      rowType: Message.getTypeScriptAlgebraicType(),
+    },
     update_log: {
       tableName: "update_log",
       rowType: UpdateLog.getTypeScriptAlgebraicType(),
-      primaryKey: "update_id",
+    },
+    user: {
+      tableName: "user",
+      rowType: User.getTypeScriptAlgebraicType(),
+      primaryKey: "identity",
     },
   },
   reducers: {
+    add_admin: {
+      reducerName: "add_admin",
+      argsType: AddAdmin.getTypeScriptAlgebraicType(),
+    },
     add_update: {
       reducerName: "add_update",
       argsType: AddUpdate.getTypeScriptAlgebraicType(),
@@ -93,13 +128,41 @@ const REMOTE_MODULE = {
       reducerName: "connect",
       argsType: Connect.getTypeScriptAlgebraicType(),
     },
+    debug_admins: {
+      reducerName: "debug_admins",
+      argsType: DebugAdmins.getTypeScriptAlgebraicType(),
+    },
+    disconnect: {
+      reducerName: "disconnect",
+      argsType: Disconnect.getTypeScriptAlgebraicType(),
+    },
+    force_init: {
+      reducerName: "force_init",
+      argsType: ForceInit.getTypeScriptAlgebraicType(),
+    },
     init: {
       reducerName: "init",
       argsType: Init.getTypeScriptAlgebraicType(),
     },
+    send_message: {
+      reducerName: "send_message",
+      argsType: SendMessage.getTypeScriptAlgebraicType(),
+    },
+    set_name: {
+      reducerName: "set_name",
+      argsType: SetName.getTypeScriptAlgebraicType(),
+    },
+    test_log: {
+      reducerName: "test_log",
+      argsType: TestLog.getTypeScriptAlgebraicType(),
+    },
     update_status: {
       reducerName: "update_status",
       argsType: UpdateStatus.getTypeScriptAlgebraicType(),
+    },
+    view_status: {
+      reducerName: "view_status",
+      argsType: ViewStatus.getTypeScriptAlgebraicType(),
     },
   },
   // Constructors which are used by the DBConnectionImpl to
@@ -123,14 +186,34 @@ const REMOTE_MODULE = {
 
 // A type representing all the possible variants of a reducer.
 export type Reducer = never
+| { name: "AddAdmin", args: AddAdmin }
 | { name: "AddUpdate", args: AddUpdate }
 | { name: "Connect", args: Connect }
+| { name: "DebugAdmins", args: DebugAdmins }
+| { name: "Disconnect", args: Disconnect }
+| { name: "ForceInit", args: ForceInit }
 | { name: "Init", args: Init }
+| { name: "SendMessage", args: SendMessage }
+| { name: "SetName", args: SetName }
+| { name: "TestLog", args: TestLog }
 | { name: "UpdateStatus", args: UpdateStatus }
+| { name: "ViewStatus", args: ViewStatus }
 ;
 
 export class RemoteReducers {
   constructor(private connection: DBConnectionImpl, private setCallReducerFlags: SetReducerFlags) {}
+
+  addAdmin() {
+    this.connection.callReducer("add_admin", new Uint8Array(0), this.setCallReducerFlags.addAdminFlags);
+  }
+
+  onAddAdmin(callback: (ctx: EventContext) => void) {
+    this.connection.onReducer("add_admin", callback);
+  }
+
+  removeOnAddAdmin(callback: (ctx: EventContext) => void) {
+    this.connection.offReducer("add_admin", callback);
+  }
 
   addUpdate(message: string) {
     const __args = { message };
@@ -160,6 +243,42 @@ export class RemoteReducers {
     this.connection.offReducer("connect", callback);
   }
 
+  debugAdmins() {
+    this.connection.callReducer("debug_admins", new Uint8Array(0), this.setCallReducerFlags.debugAdminsFlags);
+  }
+
+  onDebugAdmins(callback: (ctx: EventContext) => void) {
+    this.connection.onReducer("debug_admins", callback);
+  }
+
+  removeOnDebugAdmins(callback: (ctx: EventContext) => void) {
+    this.connection.offReducer("debug_admins", callback);
+  }
+
+  disconnect() {
+    this.connection.callReducer("disconnect", new Uint8Array(0), this.setCallReducerFlags.disconnectFlags);
+  }
+
+  onDisconnect(callback: (ctx: EventContext) => void) {
+    this.connection.onReducer("disconnect", callback);
+  }
+
+  removeOnDisconnect(callback: (ctx: EventContext) => void) {
+    this.connection.offReducer("disconnect", callback);
+  }
+
+  forceInit() {
+    this.connection.callReducer("force_init", new Uint8Array(0), this.setCallReducerFlags.forceInitFlags);
+  }
+
+  onForceInit(callback: (ctx: EventContext) => void) {
+    this.connection.onReducer("force_init", callback);
+  }
+
+  removeOnForceInit(callback: (ctx: EventContext) => void) {
+    this.connection.offReducer("force_init", callback);
+  }
+
   init() {
     this.connection.callReducer("init", new Uint8Array(0), this.setCallReducerFlags.initFlags);
   }
@@ -170,6 +289,50 @@ export class RemoteReducers {
 
   removeOnInit(callback: (ctx: EventContext) => void) {
     this.connection.offReducer("init", callback);
+  }
+
+  sendMessage(text: string) {
+    const __args = { text };
+    let __writer = new BinaryWriter(1024);
+    SendMessage.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("send_message", __argsBuffer, this.setCallReducerFlags.sendMessageFlags);
+  }
+
+  onSendMessage(callback: (ctx: EventContext, text: string) => void) {
+    this.connection.onReducer("send_message", callback);
+  }
+
+  removeOnSendMessage(callback: (ctx: EventContext, text: string) => void) {
+    this.connection.offReducer("send_message", callback);
+  }
+
+  setName(name: string) {
+    const __args = { name };
+    let __writer = new BinaryWriter(1024);
+    SetName.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("set_name", __argsBuffer, this.setCallReducerFlags.setNameFlags);
+  }
+
+  onSetName(callback: (ctx: EventContext, name: string) => void) {
+    this.connection.onReducer("set_name", callback);
+  }
+
+  removeOnSetName(callback: (ctx: EventContext, name: string) => void) {
+    this.connection.offReducer("set_name", callback);
+  }
+
+  testLog() {
+    this.connection.callReducer("test_log", new Uint8Array(0), this.setCallReducerFlags.testLogFlags);
+  }
+
+  onTestLog(callback: (ctx: EventContext) => void) {
+    this.connection.onReducer("test_log", callback);
+  }
+
+  removeOnTestLog(callback: (ctx: EventContext) => void) {
+    this.connection.offReducer("test_log", callback);
   }
 
   updateStatus(newStatus: string) {
@@ -188,9 +351,26 @@ export class RemoteReducers {
     this.connection.offReducer("update_status", callback);
   }
 
+  viewStatus() {
+    this.connection.callReducer("view_status", new Uint8Array(0), this.setCallReducerFlags.viewStatusFlags);
+  }
+
+  onViewStatus(callback: (ctx: EventContext) => void) {
+    this.connection.onReducer("view_status", callback);
+  }
+
+  removeOnViewStatus(callback: (ctx: EventContext) => void) {
+    this.connection.offReducer("view_status", callback);
+  }
+
 }
 
 export class SetReducerFlags {
+  addAdminFlags: CallReducerFlags = 'FullUpdate';
+  addAdmin(flags: CallReducerFlags) {
+    this.addAdminFlags = flags;
+  }
+
   addUpdateFlags: CallReducerFlags = 'FullUpdate';
   addUpdate(flags: CallReducerFlags) {
     this.addUpdateFlags = flags;
@@ -201,14 +381,49 @@ export class SetReducerFlags {
     this.connectFlags = flags;
   }
 
+  debugAdminsFlags: CallReducerFlags = 'FullUpdate';
+  debugAdmins(flags: CallReducerFlags) {
+    this.debugAdminsFlags = flags;
+  }
+
+  disconnectFlags: CallReducerFlags = 'FullUpdate';
+  disconnect(flags: CallReducerFlags) {
+    this.disconnectFlags = flags;
+  }
+
+  forceInitFlags: CallReducerFlags = 'FullUpdate';
+  forceInit(flags: CallReducerFlags) {
+    this.forceInitFlags = flags;
+  }
+
   initFlags: CallReducerFlags = 'FullUpdate';
   init(flags: CallReducerFlags) {
     this.initFlags = flags;
   }
 
+  sendMessageFlags: CallReducerFlags = 'FullUpdate';
+  sendMessage(flags: CallReducerFlags) {
+    this.sendMessageFlags = flags;
+  }
+
+  setNameFlags: CallReducerFlags = 'FullUpdate';
+  setName(flags: CallReducerFlags) {
+    this.setNameFlags = flags;
+  }
+
+  testLogFlags: CallReducerFlags = 'FullUpdate';
+  testLog(flags: CallReducerFlags) {
+    this.testLogFlags = flags;
+  }
+
   updateStatusFlags: CallReducerFlags = 'FullUpdate';
   updateStatus(flags: CallReducerFlags) {
     this.updateStatusFlags = flags;
+  }
+
+  viewStatusFlags: CallReducerFlags = 'FullUpdate';
+  viewStatus(flags: CallReducerFlags) {
+    this.viewStatusFlags = flags;
   }
 
 }
@@ -224,8 +439,16 @@ export class RemoteTables {
     return new CurrentStatusTableHandle(this.connection.clientCache.getOrCreateTable<CurrentStatus>(REMOTE_MODULE.tables.current_status));
   }
 
+  get message(): MessageTableHandle {
+    return new MessageTableHandle(this.connection.clientCache.getOrCreateTable<Message>(REMOTE_MODULE.tables.message));
+  }
+
   get updateLog(): UpdateLogTableHandle {
     return new UpdateLogTableHandle(this.connection.clientCache.getOrCreateTable<UpdateLog>(REMOTE_MODULE.tables.update_log));
+  }
+
+  get user(): UserTableHandle {
+    return new UserTableHandle(this.connection.clientCache.getOrCreateTable<User>(REMOTE_MODULE.tables.user));
   }
 }
 

@@ -30,7 +30,7 @@ const StatusUpdates = () => {
           .withModuleName('status-module')
           .withCredentials([null, isValidToken(savedToken) ? savedToken : null])
           .onConnect((connectedConn, identity, token) => {
-            console.log('Connected with connection object:', connectedConn);
+            console.log('Connected with connection object 1:', connectedConn);
             ///
 //             if (isValidToken(token)) {
 //               console.log('Using valid token:', token);
@@ -51,9 +51,9 @@ const StatusUpdates = () => {
             });
             
   
-            connectedConn.subscriptionBuilder()
+            let sub = connectedConn.subscriptionBuilder()
             .onApplied(() => {
-                console.log('Subscription applied');
+                console.log('Subscription applied --------------------------------');
             
               // NEW: Add these three lines for admin table debugging
               const adminCount = connectedConn.db.admin.count();
@@ -77,14 +77,26 @@ const StatusUpdates = () => {
                     .map(update => ({
                         message: update.message,
                         timestamp: update.timestamp,
-                        updateId: update.updateId,
+                        update_id: update.update_id,
                     }))
                     .sort((a, b) => Number(b.timestamp - a.timestamp));
             
                 setUpdates(fetchedUpdates);
             });
 
+
+            sub.subscribe('SELECT * FROM current_status');
+            sub.subscribe('SELECT * FROM admin');
+            sub.subscribe('SELECT * FROM update_log');
+            sub.subscribe('SELECT * FROM message');
+            sub.subscribe('SELECT * FROM user');
+
+            //sub.onApplied();
+
+            console.log("Subscribed to admin table");
             connectedConn.subscribe('SELECT * FROM admin');
+            connectedConn.subscribe('SELECT * FROM update_log');
+            connectedConn.subscribe('SELECT * FROM current_status');
 
           })
           .onConnectError((_, error) => {
@@ -99,23 +111,22 @@ const StatusUpdates = () => {
           })
           .build();
 
-            
+          conn.db.currentStatus.onUpdate((_, newStatus) => {
+            console.log('Status update received:', newStatus);
+            setCurrentStatus({
+              id: newStatus.id,
+              message: newStatus.message,
+              lastUpdated: newStatus.lastUpdated,
+            });
+            // NEW: Add these three lines for admin table debugging
+            const adminCount = conn.db.admin.count();
+            console.log('Admin table check:', {
+                adminCount,
+                admins: Array.from(conn.db.admin.iter()),
+                currentIdentity: conn.identity
+            });
 
-        conn.db.currentStatus.onUpdate((_, newStatus) => {
-          console.log('Status update received:', newStatus);
-          setCurrentStatus({
-            id: newStatus.id,
-            message: newStatus.message,
-            lastUpdated: newStatus.lastUpdated,
           });
-                        // NEW: Add these three lines for admin table debugging
-                        const adminCount = connectedConn.db.admin.count();
-                        console.log('Admin table check:', {
-                            adminCount,
-                            admins: Array.from(connectedConn.db.admin.iter()),
-                            currentIdentity: identity
-                        });
-        });
 
         conn.db.updateLog.onInsert(newUpdate => {
           console.log('New update received:', newUpdate);
@@ -124,7 +135,7 @@ const StatusUpdates = () => {
             {
               message: newUpdate.message,
               timestamp: newUpdate.timestamp,
-              updateId: newUpdate.updateId,
+              update_id: newUpdate.update_id,
             },
           ].sort((a, b) => Number(b.timestamp - a.timestamp)));
         });
@@ -181,7 +192,7 @@ const StatusUpdates = () => {
           <div className="space-y-3">
             {updates.map(update => (
               <div
-                key={update.updateId.toString()}
+                key={update.update_id.toString()}
                 className="p-3 bg-gray-50 rounded-lg border border-gray-200"
               >
                 <p className="text-gray-800">{update.message}</p>

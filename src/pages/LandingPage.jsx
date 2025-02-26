@@ -3,7 +3,9 @@ import { Timer, Construction } from 'lucide-react';
 import KofiButton from '../components/KofiButton';
 import StatusUpdates from '../components/StatusUpdates.tsx';
 import AdminControls from '../components/AdminControls.tsx';
-import TestSDK from '../test/TestSDK';
+import TestSDK from '../components/TestSDK.jsx';
+
+// Then inside your component:
 
 
 const LandingPage = () => {
