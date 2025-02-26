@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import initializeSpacetimeDB from '../../utils/spacetimeDBClient.jsx';
+//import initializeSpacetimeDB from '../../utils/spacetimeDBClient.jsx';
 
 const TestSDK = () => {
   const [sdkStatus, setSdkStatus] = useState('Not initialized');
