@@ -8,6 +8,7 @@ const TestSDK = () => {
     try {
       console.log('Initializing SpacetimeDB SDK...');
       
+      /*
       // Initialize the SpacetimeDB client
       const isInitialized = initializeSpacetimeDB();
       setSdkStatus(isInitialized ? 'Initialized' : 'Initialization failed');
@@ -19,6 +20,8 @@ const TestSDK = () => {
       if (hasDBConnection) {
         console.log('DBConnection object:', window.DBConnection);
       }
+
+      */
     } catch (error) {
       console.error('Error in TestSDK component:', error);
       setSdkStatus(`Error: ${error.message}`);
