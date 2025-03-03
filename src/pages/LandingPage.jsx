@@ -60,9 +60,6 @@ const LandingPage = () => {
 
               I don't even know what this is yet. That much is true. I think it's a game though.
 
-              [update 02/04/25 - My updates section below is still rather broken, so I'll put one here.
-              While I'm not sure *exactly* what this is, I can say that as of today, it's an MMO.
-              So. Welcome to that, I guess!]
             </p>
 
             {/* Status Updates Component */}
