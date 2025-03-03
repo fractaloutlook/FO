@@ -67,8 +67,7 @@ const LandingPage = () => {
 
             {/* Status Updates Component */}
             <StatusUpdates />
-            {/* Admin Controls - Only renders for admins */}
-            <AdminControls />
+
 
             {/* Promises Section */}
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">

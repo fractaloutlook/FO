@@ -5,31 +5,49 @@ const AdminControls = ({ connection }) => {
   const [newStatus, setNewStatus] = useState('');
   const [newUpdate, setNewUpdate] = useState('');
 
-  const handleStatusUpdate = (e) => {
-    e.preventDefault();
-    if (!newStatus.trim() || !connection) return;
+// 3.7's new version of handleStatusUpdate
+const handleStatusUpdate = (e) => {
+  e.preventDefault();
+  if (!newStatus.trim() || !connection) return;
+  
+  try {
+    console.log('Sending status update:', newStatus);
+    // 3.7's debugging output
+    console.log('Connection object:', connection);
+    console.log('Available reducers:', Object.keys(connection.reducers || {}));
     
-    try {
-      console.log('Sending status update:', newStatus);
-      connection.reducers.updateStatus(newStatus);
-      setNewStatus('');
-    } catch (error) {
-      console.error('Error updating status:', error);
-    }
-  };
+    connection.reducers.updateStatus(newStatus);
+    setNewStatus('');
+  } catch (error) {
+    console.error('Error updating status:', error);
+  }
+};
 
-  const handleAddUpdate = (e) => {
-    e.preventDefault();
-    if (!newUpdate.trim() || !connection) return;
+const handleAddUpdate = (e) => {
+  e.preventDefault();
+  if (!newUpdate.trim() || !connection) {
+    console.log("Cannot add update:", {
+      newUpdateEmpty: !newUpdate.trim(),
+      connectionMissing: !connection
+    });
+    return;
+  }
+  
+  try {
+    console.log('Adding update:', {
+      text: newUpdate,
+      connection: !!connection,
+      reducers: connection ? Object.keys(connection.reducers || {}) : 'none'
+    });
     
-    try {
-      console.log('Adding update:', newUpdate);
-      connection.reducers.addUpdate(newUpdate);
-      setNewUpdate('');
-    } catch (error) {
-      console.error('Error adding update:', error);
-    }
-  };
+    connection.reducers.addUpdate(newUpdate);
+    
+    // Clear the input regardless of success/failure
+    setNewUpdate('');
+  } catch (error) {
+    console.error('Error adding update:', error, error.stack);
+  }
+};
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
