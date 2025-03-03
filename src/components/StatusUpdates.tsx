@@ -3,7 +3,10 @@ import { AlertCircle } from 'lucide-react';
 import { AdminTableHandle, DBConnection } from '../module_bindings';
 import AdminControls from './AdminControls';
 
+/////////////////// StatusUpdates Module //////////////////////////
+
 const StatusUpdates = () => {
+  // define state variables
   const [isConnected, setIsConnected] = useState(false);
   const [statusMessage, setStatusMessage] = useState('Connecting...');
   const [currentStatus, setCurrentStatus] = useState(null);
@@ -12,33 +15,33 @@ const StatusUpdates = () => {
   const [connection, setConnection] = useState(null);
   const initialized = useRef(false); 
 
-    // 3.7's new useEffect block for debugging admin table //////////////////////////
-    React.useEffect(() => {
-      // Expose a debug method to the global window object
-      window.debugAdmin = () => {
-        if (!connection) {
-          console.log('No connection available');
-          return;
-        }
-        
-        const adminTableEntries = Array.from(connection.db.admin.iter());
-        const identity = connection.identity;
-        
-        console.log('Admin Debug:', {
-          connection: !!connection,
-          identity: identity?.toHexString?.(),
-          adminCount: connection.db.admin.count(),
-          adminEntries: adminTableEntries.map(a => ({
-            identityHex: a.identity?.toHexString?.(),
-            isMatch: a.identity?.toHexString?.() === identity?.toHexString?.()
-          }))
-        });
-      };
+  // 3.7's new useEffect block for debugging admin table //////////////////////////
+  React.useEffect(() => {
+    // Expose a debug method to the global window object
+    window.debugAdmin = () => {
+      if (!connection) {
+        console.log('No connection available');
+        return;
+      }
       
-      return () => {
-        delete window.debugAdmin;
-      };
-    }, [connection]);
+      const adminTableEntries = Array.from(connection.db.admin.iter());
+      const identity = connection.identity;
+      
+      console.log('Admin Debug:', {
+        connection: !!connection,
+        identity: identity?.toHexString?.(),
+        adminCount: connection.db.admin.count(),
+        adminEntries: adminTableEntries.map(a => ({
+          identityHex: a.identity?.toHexString?.(),
+          isMatch: a.identity?.toHexString?.() === identity?.toHexString?.()
+        }))
+      });
+    };
+    
+    return () => {
+      delete window.debugAdmin;
+    };
+  }, [connection]);
 
     ////////////////////////// end of new useEffect block for debugging admin table
 
@@ -313,6 +316,50 @@ setUpdates(fetchedUpdates);
         </div>
       )}
 
+
+    <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <h4 className="font-medium text-gray-900 mb-4">Recent Updates by hand:</h4>
+        <div className="space-y-3">
+          <div
+              className="p-3 bg-gray-50 rounded-lg border border-gray-200"
+            >
+              <p className="text-gray-800">Putting STDB module onto testnet</p>
+              <p className="text-sm text-gray-500 mt-1">
+                Just now
+              </p>
+            </div>
+
+            <div
+              className="p-3 bg-gray-50 rounded-lg border border-gray-200"
+            >
+              <p className="text-gray-800">Working on updates functionality and automation</p>
+              <p className="text-sm text-gray-500 mt-1">
+                03-02-2025
+              </p>
+            </div>
+
+            <div
+              className="p-3 bg-gray-50 rounded-lg border border-gray-200"
+            >
+              <p className="text-gray-800">Small medical derailment - fighting with nature</p>
+              <p className="text-sm text-gray-500 mt-1">
+                The whole month of February
+              </p>
+            </div>
+
+            <div
+              className="p-3 bg-gray-50 rounded-lg border border-gray-200"
+            >
+              <p className="text-gray-800">My updates section below is still rather broken, so I'll put one here. While I'm not sure *exactly* what this is, I can say that as of today, it's an MMO. So. Welcome to that, I guess!</p>
+              <p className="text-sm text-gray-500 mt-1">
+                02-04-2025
+              </p>
+            </div>
+        
+        </div>
+      </div>
+      
+
       {isAdmin && connection && (
         <AdminControls connection={connection} />
       )}
@@ -320,7 +367,6 @@ setUpdates(fetchedUpdates);
       <div className="text-xs text-gray-500">
         Admin: {isAdmin ? 'Yes' : 'No'} | Connection: {connection ? 'Active' : 'None'}
       </div>
-      // Add this near the bottom of your StatusUpdates component
 <div className="mt-4">
   <button
     onClick={() => {
