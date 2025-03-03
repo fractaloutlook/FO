@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Timer, Construction } from 'lucide-react';
 import KofiButton from '../components/KofiButton';
-import StatusUpdates from '../components/StatusUpdates.tsx';
-import AdminControls from '../components/AdminControls.tsx';
-import TestSDK from '../components/TestSDK.jsx';
+import StatusUpdates from '../components/StatusUpdates';
+import AdminControls from '../components/AdminControls';
+//import TestSDK from '../components/TestSDK';
 
 // Then inside your component:
 
@@ -29,7 +29,7 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 font-sans">
-      <TestSDK />
+
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Timer Banner */}
         <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
