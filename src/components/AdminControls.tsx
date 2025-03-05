@@ -115,6 +115,23 @@ const AdminControls = ({ connection }) => {
           </button>
         </div>
       </form>
+      {/* Admin Management Section */}
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          <h4 className="text-sm font-medium mb-2">Admin Management</h4>
+          <button 
+            onClick={() => {
+              if (connection?.reducers?.addAdmin) {
+                connection.reducers.addAdmin();
+                setActionFeedback('Added current user as admin');
+                setTimeout(() => setActionFeedback(''), 3000);
+              }
+            }}
+            className="w-full py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 disabled:bg-purple-300"
+            disabled={!connection}
+          >
+            Make Current User Admin
+          </button>
+        </div>
     </div>
   );
 };

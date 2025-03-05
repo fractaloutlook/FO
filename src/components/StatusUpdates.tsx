@@ -28,6 +28,7 @@ const StatusUpdates = () => {
       
       const adminTableEntries = Array.from(connection.db.admin.iter());
       const identity = connection.identity;
+      console.log('Admin Debug**********************:', identity);
       
       try {
         console.log('Admin Debug:', {
@@ -86,13 +87,14 @@ const StatusUpdates = () => {
         try {
           const savedToken = localStorage.getItem('auth_token');
           console.log('Using saved token:', savedToken);
-          
+          // Check token validity
           const isValidToken = (token) => token && typeof token === 'string' && token.length > 20;
+          console.log('Token is valid:', isValidToken(savedToken));
           
           const { DbConnection } = await import('../module_bindings');
           
           const conn = await DbConnection.builder()
-            .withUri('ws://localhost:3000')
+            .withUri('ws://64.181.202.144:3000')
             .withModuleName('status-module')
             .withToken(isValidToken(savedToken) ? savedToken : null)
             .onConnect((connectedConn, identity, token) => {
@@ -100,15 +102,51 @@ const StatusUpdates = () => {
               
               setConnection(connectedConn);
               localStorage.setItem('auth_token', token);
+              console.log('Saved new token:', token);
+              console.log('Current identity:', identity?.toHexString?.());
               setIsConnected(true);
               setStatusMessage('Connected');
-              
+              console.log('Connection details:', {
+                tokenLength: token?.length,
+                identityHex: identity?.toHexString?.(),
+                tokenInLocalStorage: localStorage.getItem('auth_token')
+              });
+
               connectedConn.subscriptionBuilder()
               .onApplied((ctx) => {
                 console.log('Subscription applied');
                 
-                // Set admin status - just use override for now
-                setIsAdmin(true);
+                try {
+                  const currentStatusRow = conn.db.currentStatus.id.find(0);
+                  if (currentStatusRow) {
+                    console.log('Found current status on load:', currentStatusRow.message);
+                    setCurrentStatus({
+                      id: currentStatusRow.id,
+                      message: currentStatusRow.message,
+                      lastUpdated: currentStatusRow.lastUpdated
+                    });
+                  } else {
+                    console.log('No current status found in database');
+                  }
+                } catch (error) {
+                  console.error('Error loading current status:', error);
+                }
+
+                // Check if the current user is an admin
+                try {
+                  const adminRecords = Array.from(connectedConn.db.admin.iter());
+                  const currentIdentity = connectedConn.identity;
+                  
+                  const isCurrentUserAdmin = adminRecords.some(admin => 
+                    admin.identity?.toHexString?.() === currentIdentity?.toHexString?.()
+                  );
+                  
+                  console.log(`Admin check: ${isCurrentUserAdmin ? 'YES' : 'NO'} (${adminRecords.length} admins found)`);
+                  setIsAdmin(isCurrentUserAdmin);
+                } catch (error) {
+                  console.error('Error checking admin status:', error);
+                  setIsAdmin(false); // Default to no admin access on error
+                }
                 
                 // Fetch updates immediately after connection
                 fetchAllUpdates(connectedConn);
@@ -187,27 +225,31 @@ const StatusUpdates = () => {
 
       {/* Updates from Database */}
       <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <h4 className="font-medium text-gray-900 mb-4">Recent Updates:</h4>
+        <h4 className="font-medium text-gray-900 mb-2">Recent Updates:</h4>
         <p className="text-xs text-gray-500 mb-2">Found {updates.length} updates</p>
         
         {updates.length === 0 ? (
           <p className="text-gray-500 italic">No updates available</p>
         ) : (
-          <div className="space-y-3">
-            {updates.map((update, index) => (
-              <div
-                key={`update-${update.update_id || index}`}
-                className="p-3 bg-gray-50 rounded-lg border border-gray-200"
-              >
-                <p className="text-gray-800">{update.message || 'Unknown message'}</p>
-                <p className="text-sm text-gray-500 mt-1">
-                  {update.timestamp 
-                    ? bigIntToDate(update.timestamp).toLocaleString()
-                    : 'Unknown time'}
-                </p>
-                <p className="text-xs text-gray-400 mt-1">ID: {update.update_id || 'unknown'}</p>
-              </div>
-            ))}
+          <div className="max-h-80 overflow-y-auto pr-2">
+            <div className="space-y-2">
+              {updates.map((update, index) => (
+                <div
+                  key={`update-${update.update_id || index}`}
+                  className="py-2 px-3 bg-gray-50 rounded border border-gray-200"
+                >
+                  <p className="text-gray-800 font-medium">{update.message || 'Unknown message'}</p>
+                  <div className="flex justify-between items-center mt-1">
+                    <p className="text-xs text-gray-500">
+                      {update.timestamp 
+                        ? bigIntToDate(update.timestamp).toLocaleString()
+                        : 'Unknown time'}
+                    </p>
+                    <p className="text-xs text-gray-400">ID: {update.update_id || 'unknown'}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -282,7 +324,41 @@ const StatusUpdates = () => {
         >
           Debug
         </button>
+
+        <button
+          onClick={() => {
+            if (connection?.reducers?.addAdmin) {
+              connection.reducers.addAdmin();
+              alert('Added current user as admin - refresh the page');
+            }
+          }}
+          className="px-4 py-2 bg-purple-200 rounded hover:bg-purple-300"
+        >
+          Make Admin
+        </button>
+
       </div>
+      {/* Admin Diagnostic & Management */}
+        <div className="mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
+          <h3 className="text-sm font-medium mb-2">Connection Diagnostics</h3>
+          <div className="text-xs mb-2">Current Identity: {connection?.identity?.toHexString?.()}</div>
+          <div className="text-xs mb-2">Admin Count: {connection?.db?.admin?.count() || 0}</div>
+          
+          <button
+            onClick={() => {
+              if (connection?.reducers?.addAdmin) {
+                connection.reducers.addAdmin();
+                alert('Added current user as admin');
+                setTimeout(() => {
+                  window.location.reload();
+                }, 500);
+              }
+            }}
+            className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+          >
+            Make Current Identity Admin
+          </button>
+        </div>
     </div>
   );
 };
