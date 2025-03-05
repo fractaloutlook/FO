@@ -94,7 +94,8 @@ const StatusUpdates = () => {
           const { DbConnection } = await import('../module_bindings');
           
           const conn = await DbConnection.builder()
-            .withUri('wss://64.181.202.144')
+            .withUri('wss://api.fractaloutlook.com')
+            //.withUri('wss://64.181.202.144')
             //.withUri('wss://api.fractaloutlook.com')
             //.withUri('wss://fractaloutlook.com/') // Note: no port needed if using standard 443
             //.withUri('wss://fractaloutlook.com:3000')
