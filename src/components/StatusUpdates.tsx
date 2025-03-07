@@ -275,6 +275,7 @@ const StatusUpdates = () => {
       </div>
 
       {/* Hardcoded Updates */}
+      
       <div className="bg-white rounded-lg border border-gray-200 p-4">
         <h4 className="font-medium text-gray-900 mb-4">Recent Updates by hand:</h4>
         <div className="space-y-3">
@@ -298,7 +299,7 @@ const StatusUpdates = () => {
             <p className="text-sm text-gray-500 mt-1">02-04-2025</p>
           </div>
         </div>
-      </div>
+      </div> 
       
       {/* Admin Controls */}
       {isAdmin && connection && (
@@ -310,7 +311,10 @@ const StatusUpdates = () => {
         Admin: {isAdmin ? 'Yes' : 'No'} | Connection: {connection ? 'Active' : 'None'}
       </div>
       
+      
       {/* Debug Buttons */}
+      
+{/*}
       <div className="mt-4 flex flex-wrap gap-2">
         <button
           onClick={() => fetchAllUpdates(connection)}
@@ -358,12 +362,16 @@ const StatusUpdates = () => {
         </button>
 
       </div>
+      
+{*/}
+
       {/* Admin Diagnostic & Management */}
         <div className="mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
           <h3 className="text-sm font-medium mb-2">Connection Diagnostics</h3>
           <div className="text-xs mb-2">Current Identity: {connection?.identity ? getSimpleID(connection.identity) : 'Not connected'}</div>
           <div className="text-xs mb-2">Admin Count: {connection?.db?.admin?.count() || 0}</div>
           
+          {/*
           <button
             onClick={() => {
               if (connection?.reducers?.addAdmin) {
@@ -378,6 +386,7 @@ const StatusUpdates = () => {
           >
             Make Current Identity Admin
           </button>
+          */}
         </div>
     </div>
   );

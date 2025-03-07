@@ -5,6 +5,7 @@ import { getSimpleID } from '../utils/bigint-utils';
 const ChatSystem = ({ connection }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [oldMessage, setOldMessage] = useState('');
   const [sendStatus, setSendStatus] = useState('');
 
   useEffect(() => {
@@ -35,7 +36,16 @@ const ChatSystem = ({ connection }) => {
   const handleSendMessage = (e) => {
     e.preventDefault();
     console.log("Send button clicked, message:", newMessage);
+    console.log("Send button clicked, oldMessage:", oldMessage);
     
+    if(oldMessage === newMessage)
+        {
+            setSendStatus('Message is same as previous message');
+            console.error("Same Message");
+            return;
+        }
+    setOldMessage(newMessage);
+
     // Clear message input regardless of success
     const messageToSend = newMessage;
     setNewMessage('');
@@ -45,11 +55,14 @@ const ChatSystem = ({ connection }) => {
       return;
     }
     
+
     if (!connection) {
       setSendStatus('Not connected to SpacetimeDB');
       console.error("No connection available");
       return;
     }
+
+    
     
     try {
       // Try to use sendMessage reducer if available
@@ -59,7 +72,7 @@ const ChatSystem = ({ connection }) => {
         setSendStatus('Message sent!');
       } 
       // Fallback to addUpdate if sendMessage isn't available
-      else if (connection.reducers?.addUpdate) {
+      /*else if (connection.reducers?.addUpdate) {
         console.log("Using addUpdate to send message (fallback)");
         connection.reducers.addUpdate(messageToSend);
         setSendStatus('Message sent via updates!');
@@ -71,7 +84,8 @@ const ChatSystem = ({ connection }) => {
           sent: Date.now()
         };
         setMessages(prev => [...prev, newMsg]);
-      } else {
+      }*/
+      else {
         setSendStatus('No suitable reducer found');
       }
     } catch (error) {

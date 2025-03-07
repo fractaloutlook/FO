@@ -116,6 +116,7 @@ const AdminControls = ({ connection }) => {
         </div>
       </form>
       {/* Admin Management Section */}
+      {/*}
         <div className="mt-4 pt-4 border-t border-gray-200">
           <h4 className="text-sm font-medium mb-2">Admin Management</h4>
           <button 
@@ -131,7 +132,7 @@ const AdminControls = ({ connection }) => {
           >
             Make Current User Admin
           </button>
-        </div>
+        </div> */}
     </div>
   );
 };
