@@ -278,11 +278,11 @@ const StatusUpdates = () => {
       {/* Hardcoded Updates */}
       
       <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <h4 className="font-medium text-gray-900 mb-4">Recent Updates by hand:</h4>
+        <h4 className="font-medium text-gray-900 mb-4">Older Updates by hand:</h4>
         <div className="space-y-3">
           <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
             <p className="text-gray-800">Putting STDB module onto testnet</p>
-            <p className="text-sm text-gray-500 mt-1">Just now</p>
+            <p className="text-sm text-gray-500 mt-1">~03-04-25 and just did a standalone server instead</p>
           </div>
 
           <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
