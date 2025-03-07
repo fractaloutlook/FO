@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AlertCircle } from 'lucide-react';
-import { safeJsonStringify, generateUniqueId, bigIntToDate } from '../utils/bigint-utils';
+import { safeJsonStringify, generateUniqueId, bigIntToDate, getSimpleID } from '../utils/bigint-utils';
 import AdminControls from './AdminControls';
 
 const StatusUpdates = () => {
@@ -88,7 +88,13 @@ const StatusUpdates = () => {
           const savedToken = localStorage.getItem('auth_token');
           console.log('Using saved token:', savedToken);
           // Check token validity
-          const isValidToken = (token) => token && typeof token === 'string' && token.length > 20;
+          const isValidToken = (token) => {
+            return token && 
+                   typeof token === 'string' && 
+                   token.length > 20 && 
+                   !token.includes('undefined') && 
+                   !token.includes('null');
+          };
           console.log('Token is valid:', isValidToken(savedToken));
           
           const { DbConnection } = await import('../module_bindings');
@@ -146,6 +152,7 @@ const StatusUpdates = () => {
                   );
                   
                   console.log(`Admin check: ${isCurrentUserAdmin ? 'YES' : 'NO'} (${adminRecords.length} admins found)`);
+                  //setIsAdmin(true);
                   setIsAdmin(isCurrentUserAdmin);
                 } catch (error) {
                   console.error('Error checking admin status:', error);
@@ -154,6 +161,9 @@ const StatusUpdates = () => {
                 
                 // Fetch updates immediately after connection
                 fetchAllUpdates(connectedConn);
+
+                //setIsAdmin(true);
+
               })
               .subscribe([
                 'SELECT * FROM admin', 
@@ -164,6 +174,12 @@ const StatusUpdates = () => {
             .onConnectError((_, error) => {
               console.error('Connection error:', error);
               setStatusMessage(`Connection error: ${error.message}`);
+              
+              // If we get an auth error, clear the token to force a fresh login next time
+              if (error.message && error.message.includes('401')) {
+                console.log('Auth error detected, clearing token');
+                localStorage.removeItem('auth_token');
+              }
             })
             .onDisconnect(() => {
               console.log('Disconnected');
@@ -345,7 +361,7 @@ const StatusUpdates = () => {
       {/* Admin Diagnostic & Management */}
         <div className="mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
           <h3 className="text-sm font-medium mb-2">Connection Diagnostics</h3>
-          <div className="text-xs mb-2">Current Identity: {connection?.identity?.toHexString?.()}</div>
+          <div className="text-xs mb-2">Current Identity: {connection?.identity ? getSimpleID(connection.identity) : 'Not connected'}</div>
           <div className="text-xs mb-2">Admin Count: {connection?.db?.admin?.count() || 0}</div>
           
           <button

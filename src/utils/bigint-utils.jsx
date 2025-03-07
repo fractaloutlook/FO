@@ -53,3 +53,16 @@ export const bigIntToDate = (timestamp) => {
     return new Date();
   }
 };
+
+export const getSimpleID = (identity) => {
+  if (!identity || !identity.toHexString) return 'Unknown';
+  
+  // Get the hex string first
+  const hex = identity.toHexString();
+  
+  // Take the first 8 characters of hex and convert to a decimal number
+  const decimal = parseInt(hex.substring(0, 8), 16);
+  
+  // Return the decimal number, possibly formatted
+  return decimal.toString();
+}
