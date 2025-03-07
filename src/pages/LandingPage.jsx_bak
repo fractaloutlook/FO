@@ -2,16 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Timer, Construction } from 'lucide-react';
 import KofiButton from '../components/KofiButton';
 import StatusUpdates from '../components/StatusUpdates';
+import AdminControls from '../components/AdminControls';
 import ChatSystem from '../components/ChatSystem';
 import PollSystem from '../components/PollSystem';
 
+// Then inside your component:
+
+
 const LandingPage = () => {
-  const [connection, setConnection] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [timeElapsed, setTimeElapsed] = useState('');
   const launchDate = new Date('2025-01-23T14:10:00');
 
-  // Timer update effect
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -27,75 +28,9 @@ const LandingPage = () => {
     return () => clearInterval(interval);
   }, [launchDate]);
 
-  // SpacetimeDB connection effect
-  useEffect(() => {
-    const connectToSpacetimeDB = async () => {
-      try {
-        console.log("Initializing SpacetimeDB connection...");
-        
-        // Dynamic import to avoid SSR issues
-        const { DbConnection } = await import('../module_bindings');
-        
-        console.log("Creating connection...");
-        const conn = DbConnection.builder()
-          .withUri('wss://api.fractaloutlook.com') // Use the secure production URL
-          .withModuleName('status-module')
-          .withToken(localStorage.getItem('auth_token'))
-          .onConnect((connectedConn, identity, token) => {
-            console.log("Connected to SpacetimeDB!", identity);
-            localStorage.setItem('auth_token', token);
-            setConnection(connectedConn);
-            
-            // Check if the current user is an admin
-            try {
-              const adminRecords = Array.from(connectedConn.db.admin.iter());
-              const currentIdentity = connectedConn.identity;
-              
-              const isCurrentUserAdmin = adminRecords.some(admin => 
-                admin.identity?.toHexString?.() === currentIdentity?.toHexString?.()
-              );
-              
-              console.log(`Admin check: ${isCurrentUserAdmin ? 'YES' : 'NO'}`);
-              setIsAdmin(isCurrentUserAdmin);
-            } catch (error) {
-              console.error('Error checking admin status:', error);
-            }
-            
-            // Add this right after setting connection and before subscription
-            console.log("Available tables:", Object.keys(connectedConn.db).join(", "));
-
-            // Set up subscription
-            connectedConn.subscriptionBuilder()
-              .onApplied((ctx) => {
-                console.log("Subscription applied!");
-              })
-              .subscribe([
-                'SELECT * FROM admin',
-                'SELECT * FROM update_log',
-                'SELECT * FROM current_status',
-                'SELECT * FROM message',
-                'SELECT * FROM user',
-                //'SELECT * FROM poll',
-                //'SELECT * FROM poll_option',
-                //'SELECT * FROM poll_vote'
-              ]);
-          })
-          .onConnectError((_, error) => {
-            console.error("Connection error:", error);
-          })
-          .build();
-        
-        console.log("Connection attempt started...");
-      } catch (error) {
-        console.error("Failed to initialize SpacetimeDB:", error);
-      }
-    };
-    
-    connectToSpacetimeDB();
-  }, []);
-
   return (
     <div className="min-h-screen bg-gray-50 p-4 font-sans">
+
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Timer Banner */}
         <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
@@ -125,10 +60,12 @@ const LandingPage = () => {
               with AI!" These people are nonsense.
 
               I don't even know what this is yet. That much is true. I think it's a game though.
+
             </p>
 
             {/* Status Updates Component */}
             <StatusUpdates />
+
 
             {/* Promises Section */}
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
@@ -184,7 +121,7 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 mt-6">
+          <div className="grid md:grid-cols-2 gap-6">
             <ChatSystem connection={connection} />
             <PollSystem connection={connection} isAdmin={isAdmin} />
           </div>

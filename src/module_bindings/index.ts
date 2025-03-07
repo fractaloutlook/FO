@@ -38,12 +38,16 @@ import { AddUpdate } from "./add_update_reducer.ts";
 export { AddUpdate };
 import { Connect } from "./connect_reducer.ts";
 export { Connect };
+import { CreatePoll } from "./create_poll_reducer.ts";
+export { CreatePoll };
 import { DebugAdmins } from "./debug_admins_reducer.ts";
 export { DebugAdmins };
 import { Disconnect } from "./disconnect_reducer.ts";
 export { Disconnect };
 import { ForceInit } from "./force_init_reducer.ts";
 export { ForceInit };
+import { ManuallyClosePoll } from "./manually_close_poll_reducer.ts";
+export { ManuallyClosePoll };
 import { SendMessage } from "./send_message_reducer.ts";
 export { SendMessage };
 import { SetName } from "./set_name_reducer.ts";
@@ -54,6 +58,8 @@ import { UpdateStatus } from "./update_status_reducer.ts";
 export { UpdateStatus };
 import { ViewStatus } from "./view_status_reducer.ts";
 export { ViewStatus };
+import { VoteOnPoll } from "./vote_on_poll_reducer.ts";
+export { VoteOnPoll };
 
 // Import and reexport all table handle types
 import { AdminTableHandle } from "./admin_table.ts";
@@ -62,6 +68,12 @@ import { CurrentStatusTableHandle } from "./current_status_table.ts";
 export { CurrentStatusTableHandle };
 import { MessageTableHandle } from "./message_table.ts";
 export { MessageTableHandle };
+import { PollTableHandle } from "./poll_table.ts";
+export { PollTableHandle };
+import { PollOptionTableHandle } from "./poll_option_table.ts";
+export { PollOptionTableHandle };
+import { PollVoteTableHandle } from "./poll_vote_table.ts";
+export { PollVoteTableHandle };
 import { UpdateLogTableHandle } from "./update_log_table.ts";
 export { UpdateLogTableHandle };
 import { UserTableHandle } from "./user_table.ts";
@@ -74,6 +86,12 @@ import { CurrentStatus } from "./current_status_type.ts";
 export { CurrentStatus };
 import { Message } from "./message_type.ts";
 export { Message };
+import { Poll } from "./poll_type.ts";
+export { Poll };
+import { PollOption } from "./poll_option_type.ts";
+export { PollOption };
+import { PollVote } from "./poll_vote_type.ts";
+export { PollVote };
 import { UpdateLog } from "./update_log_type.ts";
 export { UpdateLog };
 import { User } from "./user_type.ts";
@@ -93,6 +111,21 @@ const REMOTE_MODULE = {
     message: {
       tableName: "message",
       rowType: Message.getTypeScriptAlgebraicType(),
+    },
+    poll: {
+      tableName: "poll",
+      rowType: Poll.getTypeScriptAlgebraicType(),
+      primaryKey: "poll_id",
+    },
+    poll_option: {
+      tableName: "poll_option",
+      rowType: PollOption.getTypeScriptAlgebraicType(),
+      primaryKey: "option_id",
+    },
+    poll_vote: {
+      tableName: "poll_vote",
+      rowType: PollVote.getTypeScriptAlgebraicType(),
+      primaryKey: "vote_id",
     },
     update_log: {
       tableName: "update_log",
@@ -117,6 +150,10 @@ const REMOTE_MODULE = {
       reducerName: "connect",
       argsType: Connect.getTypeScriptAlgebraicType(),
     },
+    create_poll: {
+      reducerName: "create_poll",
+      argsType: CreatePoll.getTypeScriptAlgebraicType(),
+    },
     debug_admins: {
       reducerName: "debug_admins",
       argsType: DebugAdmins.getTypeScriptAlgebraicType(),
@@ -128,6 +165,10 @@ const REMOTE_MODULE = {
     force_init: {
       reducerName: "force_init",
       argsType: ForceInit.getTypeScriptAlgebraicType(),
+    },
+    manually_close_poll: {
+      reducerName: "manually_close_poll",
+      argsType: ManuallyClosePoll.getTypeScriptAlgebraicType(),
     },
     send_message: {
       reducerName: "send_message",
@@ -148,6 +189,10 @@ const REMOTE_MODULE = {
     view_status: {
       reducerName: "view_status",
       argsType: ViewStatus.getTypeScriptAlgebraicType(),
+    },
+    vote_on_poll: {
+      reducerName: "vote_on_poll",
+      argsType: VoteOnPoll.getTypeScriptAlgebraicType(),
     },
   },
   // Constructors which are used by the DbConnectionImpl to
@@ -179,14 +224,17 @@ export type Reducer = never
 | { name: "AddAdmin", args: AddAdmin }
 | { name: "AddUpdate", args: AddUpdate }
 | { name: "Connect", args: Connect }
+| { name: "CreatePoll", args: CreatePoll }
 | { name: "DebugAdmins", args: DebugAdmins }
 | { name: "Disconnect", args: Disconnect }
 | { name: "ForceInit", args: ForceInit }
+| { name: "ManuallyClosePoll", args: ManuallyClosePoll }
 | { name: "SendMessage", args: SendMessage }
 | { name: "SetName", args: SetName }
 | { name: "TestLog", args: TestLog }
 | { name: "UpdateStatus", args: UpdateStatus }
 | { name: "ViewStatus", args: ViewStatus }
+| { name: "VoteOnPoll", args: VoteOnPoll }
 ;
 
 export class RemoteReducers {
@@ -228,6 +276,22 @@ export class RemoteReducers {
     this.connection.offReducer("connect", callback);
   }
 
+  createPoll(question: string, options: string[], durationMinutes: bigint | undefined) {
+    const __args = { question, options, durationMinutes };
+    let __writer = new BinaryWriter(1024);
+    CreatePoll.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("create_poll", __argsBuffer, this.setCallReducerFlags.createPollFlags);
+  }
+
+  onCreatePoll(callback: (ctx: ReducerEventContext, question: string, options: string[], durationMinutes: bigint | undefined) => void) {
+    this.connection.onReducer("create_poll", callback);
+  }
+
+  removeOnCreatePoll(callback: (ctx: ReducerEventContext, question: string, options: string[], durationMinutes: bigint | undefined) => void) {
+    this.connection.offReducer("create_poll", callback);
+  }
+
   debugAdmins() {
     this.connection.callReducer("debug_admins", new Uint8Array(0), this.setCallReducerFlags.debugAdminsFlags);
   }
@@ -258,6 +322,22 @@ export class RemoteReducers {
 
   removeOnForceInit(callback: (ctx: ReducerEventContext) => void) {
     this.connection.offReducer("force_init", callback);
+  }
+
+  manuallyClosePoll(pollId: bigint) {
+    const __args = { pollId };
+    let __writer = new BinaryWriter(1024);
+    ManuallyClosePoll.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("manually_close_poll", __argsBuffer, this.setCallReducerFlags.manuallyClosePollFlags);
+  }
+
+  onManuallyClosePoll(callback: (ctx: ReducerEventContext, pollId: bigint) => void) {
+    this.connection.onReducer("manually_close_poll", callback);
+  }
+
+  removeOnManuallyClosePoll(callback: (ctx: ReducerEventContext, pollId: bigint) => void) {
+    this.connection.offReducer("manually_close_poll", callback);
   }
 
   sendMessage(text: string) {
@@ -332,6 +412,22 @@ export class RemoteReducers {
     this.connection.offReducer("view_status", callback);
   }
 
+  voteOnPoll(pollId: bigint, optionId: bigint) {
+    const __args = { pollId, optionId };
+    let __writer = new BinaryWriter(1024);
+    VoteOnPoll.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("vote_on_poll", __argsBuffer, this.setCallReducerFlags.voteOnPollFlags);
+  }
+
+  onVoteOnPoll(callback: (ctx: ReducerEventContext, pollId: bigint, optionId: bigint) => void) {
+    this.connection.onReducer("vote_on_poll", callback);
+  }
+
+  removeOnVoteOnPoll(callback: (ctx: ReducerEventContext, pollId: bigint, optionId: bigint) => void) {
+    this.connection.offReducer("vote_on_poll", callback);
+  }
+
 }
 
 export class SetReducerFlags {
@@ -345,6 +441,11 @@ export class SetReducerFlags {
     this.addUpdateFlags = flags;
   }
 
+  createPollFlags: CallReducerFlags = 'FullUpdate';
+  createPoll(flags: CallReducerFlags) {
+    this.createPollFlags = flags;
+  }
+
   debugAdminsFlags: CallReducerFlags = 'FullUpdate';
   debugAdmins(flags: CallReducerFlags) {
     this.debugAdminsFlags = flags;
@@ -353,6 +454,11 @@ export class SetReducerFlags {
   forceInitFlags: CallReducerFlags = 'FullUpdate';
   forceInit(flags: CallReducerFlags) {
     this.forceInitFlags = flags;
+  }
+
+  manuallyClosePollFlags: CallReducerFlags = 'FullUpdate';
+  manuallyClosePoll(flags: CallReducerFlags) {
+    this.manuallyClosePollFlags = flags;
   }
 
   sendMessageFlags: CallReducerFlags = 'FullUpdate';
@@ -380,6 +486,11 @@ export class SetReducerFlags {
     this.viewStatusFlags = flags;
   }
 
+  voteOnPollFlags: CallReducerFlags = 'FullUpdate';
+  voteOnPoll(flags: CallReducerFlags) {
+    this.voteOnPollFlags = flags;
+  }
+
 }
 
 export class RemoteTables {
@@ -395,6 +506,18 @@ export class RemoteTables {
 
   get message(): MessageTableHandle {
     return new MessageTableHandle(this.connection.clientCache.getOrCreateTable<Message>(REMOTE_MODULE.tables.message));
+  }
+
+  get poll(): PollTableHandle {
+    return new PollTableHandle(this.connection.clientCache.getOrCreateTable<Poll>(REMOTE_MODULE.tables.poll));
+  }
+
+  get pollOption(): PollOptionTableHandle {
+    return new PollOptionTableHandle(this.connection.clientCache.getOrCreateTable<PollOption>(REMOTE_MODULE.tables.poll_option));
+  }
+
+  get pollVote(): PollVoteTableHandle {
+    return new PollVoteTableHandle(this.connection.clientCache.getOrCreateTable<PollVote>(REMOTE_MODULE.tables.poll_vote));
   }
 
   get updateLog(): UpdateLogTableHandle {
