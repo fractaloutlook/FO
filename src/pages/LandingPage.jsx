@@ -184,7 +184,7 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 mt-6">
+          <div className="flex flex-col gap-4">
             <ChatSystem connection={connection} />
             <PollSystem connection={connection} isAdmin={isAdmin} />
           </div>

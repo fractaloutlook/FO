@@ -4,7 +4,7 @@ import LandingPage from './pages/LandingPage'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  //<React.StrictMode>
     <LandingPage />
-  </React.StrictMode>,
+  //</React.StrictMode>,
 )
