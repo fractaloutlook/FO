@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getSimpleID } from '../utils/bigint-utils';
-import { getFriendlyName } from '../utils/FriendlyName';
+import { getFriendlyName } from '../utils/friendlyname';
 
 const ChatSystem = ({ connection }) => {
   const [messages, setMessages] = useState([]);
