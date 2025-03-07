@@ -8,6 +8,8 @@ const ChatSystem = ({ connection }) => {
   const [oldMessage, setOldMessage] = useState('');
   const [sendStatus, setSendStatus] = useState('');
   const messagesEndRef = useRef(null);
+  const [hasScrolled, setHasScrolled] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   
   useEffect(() => {
     if (connection && connection.db?.message) {
@@ -29,10 +31,19 @@ const ChatSystem = ({ connection }) => {
       }
     }
   }, [connection]);
-
+  
+  // Scroll to bottom when new messages arrive
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (isInitialLoad) {
+      // Check if enough messages have loaded, then stop preventing scrolls
+      if (messages.length > 5) { // Adjust 5 to whatever count makes sense
+        setIsInitialLoad(false);
+      }
+    } else {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
+  
 
   const handleSendMessage = (e) => {
     e.preventDefault();
