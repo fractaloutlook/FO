@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getSimpleID } from '../utils/bigint-utils';
+import { getFriendlyName } from '../utils/friendlyName';
 
 const ChatSystem = ({ connection }) => {
   const [messages, setMessages] = useState([]);
@@ -7,7 +8,7 @@ const ChatSystem = ({ connection }) => {
   const [oldMessage, setOldMessage] = useState('');
   const [sendStatus, setSendStatus] = useState('');
   const messagesEndRef = useRef(null);
-
+  
   useEffect(() => {
     if (connection && connection.db?.message) {
       try {
@@ -69,9 +70,9 @@ const ChatSystem = ({ connection }) => {
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4">
       {/* Option 1: Center header */}
-      <h3 className="text-center font-medium text-gray-900 mb-2">C?</h3>
+      {/* <h3 className="text-center font-medium text-gray-900 mb-2">C?</h3>*/}
       {/* Option 2: Remove header entirely */}
-      {/* <h3 className="sr-only">C?</h3> */}
+      <h3 className="sr-only">C?</h3>
       
       <div className="h-64 overflow-y-auto mb-3 p-2 bg-gray-50 rounded">
         {messages.length === 0 ? (
@@ -81,10 +82,12 @@ const ChatSystem = ({ connection }) => {
             {messages.map((msg, index) => {
               const senderName = connection?.db?.user?.identity?.find?.(msg.sender)?.name
                 || (msg.sender ? getSimpleID(msg.sender) : 'Unknown');
+                const friendlyName = getFriendlyName(msg.sender);
+                console.log("Sender ID:", msg.sender);
               return (
                 <div key={index} className="p-2 bg-blue-50 rounded">
                   <div className="flex items-start">
-                    <span className="font-bold mr-2 text-sm">{senderName}:</span>
+                    <span className="font-bold mr-2 text-sm">{friendlyName}:</span>
                     <span className="text-sm">{msg.text}</span>
                   </div>
                 </div>
