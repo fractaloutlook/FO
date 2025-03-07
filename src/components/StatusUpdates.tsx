@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { safeJsonStringify, generateUniqueId, bigIntToDate, getSimpleID } from '../utils/bigint-utils';
+import { getFriendlyName } from '../utils/friendlyname';
 import AdminControls from './AdminControls';
 
 const StatusUpdates = () => {
@@ -368,8 +369,12 @@ const StatusUpdates = () => {
       {/* Admin Diagnostic & Management */}
         <div className="mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
           <h3 className="text-sm font-medium mb-2">Connection Diagnostics</h3>
-          <div className="text-xs mb-2">Current Identity: {connection?.identity ? getSimpleID(connection.identity) : 'Not connected'}</div>
-          <div className="text-xs mb-2">Admin Count: {connection?.db?.admin?.count() || 0}</div>
+          <div className="text-xs mb-2">
+  Current Identity: {connection?.identity 
+    ? `${getSimpleID(connection.identity)} (${connection.identity.data ? getFriendlyName(connection.identity) : "Unknown"})`
+    : 'Not connected'}
+</div>
+          <div className="text-xs mb-2">Count: {connection?.db?.admin?.count() || 0}</div>
           
           {/*
           <button

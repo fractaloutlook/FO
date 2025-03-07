@@ -83,7 +83,7 @@ const ChatSystem = ({ connection }) => {
               const senderName = connection?.db?.user?.identity?.find?.(msg.sender)?.name
                 || (msg.sender ? getSimpleID(msg.sender) : 'Unknown');
                 const friendlyName = getFriendlyName(msg.sender);
-                console.log("Sender ID:", msg.sender);
+                //console.log("Sender ID:", msg.sender);
               return (
                 <div key={index} className="p-2 bg-blue-50 rounded">
                   <div className="flex items-start">

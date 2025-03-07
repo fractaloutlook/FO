@@ -145,9 +145,11 @@ const PollSystem = ({ connection, isAdmin }) => {
   const { counts, percentages, total } = getVotePercentages();
   
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4 my-4">
-      {/* Option: Center the header or remove it entirely */}
-      <h3 className="text-center font-medium text-gray-900 mb-2">P?</h3>
+    <div className="bg-white rounded-lg border border-gray-200 p-4">
+      {/* Option 1: Center header */}
+      {/*<h3 className="text-center font-medium text-gray-900 mb-2">C?</h3>*/}
+      {/* Option 2: Remove header entirely */}
+      <h3 className="sr-only">C?</h3>
       
       {activePoll ? (
         <div>
