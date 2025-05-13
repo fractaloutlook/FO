@@ -3,6 +3,7 @@ import { AlertCircle } from 'lucide-react';
 import { safeJsonStringify, generateUniqueId, bigIntToDate, getSimpleID } from '../utils/bigint-utils';
 import { getFriendlyName } from '../utils/friendlyname';
 import AdminControls from './AdminControls';
+import { Timer, Construction, Scroll as ScrollIcon } from 'lucide-react';
 
 const StatusUpdates = () => {
   const [isConnected, setIsConnected] = useState(false);
@@ -12,6 +13,16 @@ const StatusUpdates = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [connection, setConnection] = useState(null);
   const initialized = useRef(false);
+  const [isScrollEnabled, setIsScrollEnabled] = useState(false);
+  const updatesContainerRef = useRef(null);
+
+  // for scrolling fix on mobile
+  const handleTouchStart = (e) => {
+    if (!isScrollEnabled) {
+      e.preventDefault();
+      setIsScrollEnabled(true); // Activate scrolling on first touch
+    }
+  };
 
   // Log updates state changes for debugging
   useEffect(() => {

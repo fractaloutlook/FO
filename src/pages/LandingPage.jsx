@@ -95,8 +95,8 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 font-sans">
-      <div className="max-w-2xl mx-auto space-y-8">
+<div className="min-h-screen bg-gray-50 p-4 md:p-8 font-sans">
+<div className="max-w-2xl mx-auto md:max-w-4xl lg:max-w-5xl space-y-8">
         {/* Timer Banner */}
         <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
           <Timer size={16} className="text-gray-500" />
@@ -184,9 +184,14 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4">
-            <ChatSystem connection={connection} />
-            <PollSystem connection={connection} isAdmin={isAdmin} />
+          <div className="grid gap-6 md:grid-cols-2 mt-8">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-1 rounded-lg shadow-sm">
+              <ChatSystem connection={connection} />
+            </div>
+            
+            <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-1 rounded-lg shadow-sm">
+              <PollSystem connection={connection} isAdmin={isAdmin} />
+            </div>
           </div>
 
           {/* Ko-fi Integration */}

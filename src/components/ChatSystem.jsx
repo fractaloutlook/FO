@@ -10,7 +10,9 @@ const ChatSystem = ({ connection }) => {
   const messagesEndRef = useRef(null);
   const [hasScrolled, setHasScrolled] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  
+
+
+
   useEffect(() => {
     if (connection && connection.db?.message) {
       try {
@@ -32,18 +34,23 @@ const ChatSystem = ({ connection }) => {
     }
   }, [connection]);
   
-  // Scroll to bottom when new messages arrive
+  // scroll down to most recent message
   useEffect(() => {
-    if (isInitialLoad) {
-      // Check if enough messages have loaded, then stop preventing scrolls
-      if (messages.length > 5) { // Adjust 5 to whatever count makes sense
+    if (messages.length > 0) {
+      if (isInitialLoad) {
+        // For initial load, scroll without animation
+        messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
         setIsInitialLoad(false);
+      } else {
+        // For new messages, use smooth scrolling
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }
-    } else {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+  }, [messages, isInitialLoad]);
   
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -80,6 +87,7 @@ const ChatSystem = ({ connection }) => {
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4">
+      <h3 className="font-medium text-gray-900 mb-3">Message Board</h3>
       {/* Option 1: Center header */}
       {/* <h3 className="text-center font-medium text-gray-900 mb-2">C?</h3>*/}
       {/* Option 2: Remove header entirely */}
@@ -104,6 +112,7 @@ const ChatSystem = ({ connection }) => {
                 </div>
               );
             })}
+            {/* Scroll to bottom when new messages arrive*/}
             <div ref={messagesEndRef} />
           </div>
         )}
