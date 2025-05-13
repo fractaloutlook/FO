@@ -5,6 +5,7 @@ import { getFriendlyName } from '../utils/friendlyname';
 import AdminControls from './AdminControls';
 import { Timer, Construction, Scroll as ScrollIcon } from 'lucide-react';
 
+/// test comment for diff file uploading 1
 const StatusUpdates = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [statusMessage, setStatusMessage] = useState('Connecting...');

@@ -151,7 +151,7 @@ const LandingPage = () => {
               </ul>
             </div>
 
-            {/* Early Supporter Benefits Section */}
+            {/* Early Supporter Benefits Section *///// test 2}
             <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
               <p className="font-medium text-green-900 mb-2">Knowing me:</p>
               <ul className="space-y-1 text-green-700">
