@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpacetimeDB on Oracle Cloud - System Updates and Dependencies</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #0D47A1;
+            border-bottom: 2px solid #0D47A1;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #1976D2;
+            margin-top: 30px;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            position: relative;
+        }
+        pre .copy-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            padding: 3px 8px;
+            background-color: #e0e0e0;
+            border: none;
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        pre .copy-button:hover {
+            background-color: #d0d0d0;
+        }
+        .note {
+            background-color: #e1f5fe;
+            border-left: 4px solid #03a9f4;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        .warning {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        .success {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        .tip {
+            background-color: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        details {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        summary {
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .step {
+            margin-bottom: 30px;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f5f5f5;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const preElements = document.querySelectorAll('pre');
+            
+            preElements.forEach(function(pre) {
+                // Create button
+                const button = document.createElement('button');
+                button.className = 'copy-button';
+                button.textContent = 'Copy';
+                
+                // Add button to pre element
+                pre.appendChild(button);
+                
+                // Add click event
+                button.addEventListener('click', function() {
+                    const code = pre.textContent.replace('Copy', '').trim();
+                    navigator.clipboard.writeText(code)
+                        .then(() => {
+                            button.textContent = 'Copied!';
+                            setTimeout(() => {
+                                button.textContent = 'Copy';
+                            }, 2000);
+                        })
+                        .catch(err => {
+                            console.error('Could not copy text: ', err);
+                        });
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>SpacetimeDB on Oracle Cloud Free Tier</h1>
+    <h2>Step 2: Update Your System and Install Dependencies</h2>
+    
+    <p>Now that you've connected to your Ubuntu VM, let's update the system and install the necessary dependencies for SpacetimeDB.</p>
+
+    <div class="step">
+        <h3>Test Block for Copy-Paste Functionality</h3>
+        <p>Here's a test block with harmless commands to check if multi-line copy-paste works in your terminal:</p>
+        
+        <pre>echo "Command 1: Hello from the first line"
+echo "Command 2: This is the second line"
+date
+echo "Command 3: This is the third line"
+ls -la | head -5</pre>
+        
+        <h3>Test Results on Multi-line Command Execution</h3>
+        <p>Our testing reveals that multi-line command behavior in SSH terminals can be unpredictable:</p>
+        <ul>
+            <li>Simple commands like <code>echo</code> and <code>date</code> usually execute in sequence when pasted together</li>
+            <li>Commands containing special characters (like pipes <code>|</code>) might require manual Enter key press</li>
+            <li>System modification commands might be processed differently than basic shell commands</li>
+            <li>For critical security or system configuration, always run commands individually</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h3>Update Package Lists and Upgrade Installed Packages</h3>
+        <p>First, let's update the package lists and upgrade any existing packages to their latest versions:</p>
+        
+        <pre>sudo apt update
+sudo apt upgrade -y</pre>
+        
+        <div class="note">
+            <strong>Note:</strong> The <code>-y</code> flag automatically answers "yes" to most prompts during the upgrade process. The upgrade might take a few minutes, depending on how many packages need to be updated.
+        </div>
+
+        <div class="warning">
+            <strong>Kernel Update Dialog:</strong> If a kernel update is available, you might see a purple screen with a message about a "Pending kernel upgrade." This is normal! Use the Tab key to highlight "OK" and then press Enter to continue.
+        </div>
+
+        <div class="note">
+            <strong>Expected Output:</strong> You'll see various packages being updated. It's important to wait for this process to complete before continuing.
+        </div>
+        
+        <div class="note">
+            <strong>Screenshot:</strong> Purple kernel upgrade notification screen.
+        </div>
+    </div>
+
+    <div class="step">
+        <h3>Install Essential Development Tools</h3>
+        <p>Now, let's install the essential development tools required for building SpacetimeDB and its dependencies:</p>
+        
+        <pre>sudo apt install -y build-essential pkg-config libssl-dev curl git llvm libclang-dev cmake</pre>
+        
+        <details>
+            <summary>What are these packages for?</summary>
+            <ul>
+                <li><code>build-essential</code>: Includes C/C++ compilers and development libraries</li>
+                <li><code>pkg-config</code>: Helps find installed libraries on your system</li>
+                <li><code>libssl-dev</code>: Development files for secure socket layer and crypto libraries</li>
+                <li><code>curl</code>: Tool for transferring data with URLs (needed for rustup)</li>
+                <li><code>git</code>: Version control system for downloading source code</li>
+                <li><code>llvm</code> and <code>libclang-dev</code>: Needed for some Rust dependencies</li>
+                <li><code>cmake</code>: Cross-platform build system</li>
+            </ul>
+        </details>
+    </div>
+
+    <div class="step">
+        <h3>Configure Firewall Rules</h3>
+        <p>SpacetimeDB will be running on port 3000 by default. We need to configure the Ubuntu firewall (UFW) to allow inbound traffic on this port:</p>
+        
+        <pre>sudo apt install -y ufw</pre>
+        <pre>sudo ufw allow ssh</pre>
+        <pre>sudo ufw allow 3000/tcp</pre>
+        <pre>sudo ufw allow 80/tcp</pre>
+        <pre>sudo ufw allow 443/tcp</pre>
+        
+        <div class="warning">
+            <strong>Important:</strong> Execute these firewall commands one at a time. Though simple multi-line commands often work when pasted together, commands like these that modify system security can behave unpredictably when pasted as a block, especially when connected through SSH from Windows. Wait for each command to complete before running the next one to ensure all security rules are properly applied.
+        </div>
+        
+        <div class="warning">
+            <strong>Warning:</strong> Make sure to allow SSH (port 22) before enabling the firewall, or you'll be locked out of your server! The <code>sudo ufw allow ssh</code> command above already does this, as it allows port 22 by using the service name rather than the explicit port number.
+        </div>
+        
+        <p>Now, enable the firewall:</p>
+        
+        <pre>sudo ufw enable</pre>
+        
+        <p>Check the status to confirm your rules were added:</p>
+        
+        <pre>sudo ufw status</pre>
+        
+        <div class="note">
+            <strong>Expected Output:</strong> The firewall status should show that ports 22 (SSH), 3000 (SpacetimeDB), 80 (HTTP), and 443 (HTTPS) are allowed.
+        </div>
+    </div>
+
+    <div class="step">
+        <h3>Configure Oracle Cloud Security Rules</h3>
+        <p>In addition to the Ubuntu firewall, you need to configure Oracle Cloud's network security rules to allow traffic to your instance. This is done through the Oracle Cloud Console.</p>
+        
+        <p>Follow these steps:</p>
+        <ol>
+            <li>Log in to the <a href="https://cloud.oracle.com/" target="_blank">Oracle Cloud Console</a></li>
+            <li>Navigate to Networking → Virtual Cloud Networks</li>
+            <li>Click on the VCN associated with your VM instance</li>
+            <li>Click on the subnet used by your instance</li>
+            <li>Click on the Security List for your subnet</li>
+            <li>Click "Add Ingress Rules"</li>
+        </ol>
+        
+        <p>Add the following ingress rules (one at a time):</p>
+        
+        <table>
+            <tr>
+                <th>Source CIDR</th>
+                <th>IP Protocol</th>
+                <th>Destination Port Range</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>0.0.0.0/0</td>
+                <td>TCP</td>
+                <td>3000</td>
+                <td>SpacetimeDB</td>
+            </tr>
+            <tr>
+                <td>0.0.0.0/0</td>
+                <td>TCP</td>
+                <td>80</td>
+                <td>HTTP</td>
+            </tr>
+            <tr>
+                <td>0.0.0.0/0</td>
+                <td>TCP</td>
+                <td>443</td>
+                <td>HTTPS</td>
+            </tr>
+        </table>
+        
+        <div class="note">
+            <strong>Note:</strong> The SSH port (22) should already be open by default.
+        </div>
+        
+        <div class="note">
+            <strong>Screenshot:</strong> Oracle Cloud Console security list with the added ingress rules.
+        </div>
+    </div>
+
+    <h2>Next Steps</h2>
+    <p>With your system updated and the necessary dependencies installed, we should reboot the system to apply the kernel updates before continuing:</p>
+    
+    <pre>sudo reboot</pre>
+    
+    <div class="note">
+        <strong>Note:</strong> This will disconnect your SSH session. Wait about 1-2 minutes, then reconnect using the same SSH command you used initially.
+    </div>
+    
+    <p>After reconnecting, we'll proceed with installing Rust and building SpacetimeDB from source.</p>
+</body>
+</html>
