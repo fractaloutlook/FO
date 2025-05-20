@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SpacetimeDB WebSocket Test</title>
+</head>
+<body>
+    <h1>SpacetimeDB WebSocket Test</h1>
+    <div id="output" style="border: 1px solid #ccc; padding: 10px; min-height: 200px;">
+        Connection status will appear here...
+    </div>
+    <script>
+        const output = document.getElementById('output');
+        
+        // Copy these values from your curl response
+        const identity = "c200a72b7300ad594f4538d7b8af821b3876b65b20fef43c99b48628d8122ff1";
+        const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJoZXhfaWRlbnRpdHkiOiJjMjAwYTcyYjczMDBhZDU5NGY0NTM4ZDdiOGFmODIxYjM4NzZiNjViMjBmZWY0M2M5OWI0ODYyOGQ4MTIyZmYxIiwic3ViIjoiZDY5Nzc4ODAtOGY2Ny00OTQzLTliMGQtOTc5ZjI2NGM2NTFlIiwiaXNzIjoibG9jYWxob3N0IiwiYXVkIjpbInNwYWNldGltZWRiIl0sImlhdCI6MTc0NzcxNzY2MSwiZXhwIjpudWxsfQ.3F2qgW2nr-CP6JqpgUxIquIe3XOmogjLmSzqpJaeTdOdn4xlD4LKud64WdBMDs9hg84CbJAcaJC90cR1wgwZeg";
+        
+        // Construct the WebSocket URL
+        const ws = new WebSocket(`wss://api.fractaloutlook.com/v1/database/test-module/subscribe`);
+        
+        // Add event listeners
+        ws.onopen = function() {
+            output.innerHTML += '<p>Connected to WebSocket</p>';
+            
+            // Send authentication message
+            const authMessage = {
+                type: "Authenticate",
+                identity: identity,
+                token: token
+            };
+            
+            ws.send(JSON.stringify(authMessage));
+            output.innerHTML += '<p>Sent authentication message</p>';
+            
+            // Send subscription message
+            const subscribeMessage = {
+                type: "Subscribe",
+                queries: ["SELECT * FROM person"]
+            };
+            
+            ws.send(JSON.stringify(subscribeMessage));
+            output.innerHTML += '<p>Sent subscription message</p>';
+        };
+        
+        ws.onmessage = function(event) {
+            output.innerHTML += `<p>Received message: ${event.data}</p>`;
+            console.log(event.data);
+        };
+        
+        ws.onerror = function(error) {
+            output.innerHTML += `<p style="color: red;">Error: ${error}</p>`;
+            console.error('WebSocket error:', error);
+        };
+        
+        ws.onclose = function(event) {
+            output.innerHTML += `<p>Connection closed: ${event.code} - ${event.reason}</p>`;
+        };
+    </script>
+</body>
+</html>
