@@ -111,66 +111,28 @@
         th {
             background-color: #f5f5f5;
         }
-        .pagination {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-        }
-        .pagination a {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #1976D2;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-        .pagination a:hover {
-            background-color: #0D47A1;
-        }
-        .pagination .disabled {
-            background-color: #cccccc;
-            color: #666666;
-            cursor: not-allowed;
-        }
-        .cmd-note {
-            background-color: #ffe0e0;
-            border-left: 4px solid #ff5252;
-            padding: 10px 15px;
-            margin: 10px 0;
-            font-size: 0.9em;
-        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const preElements = document.querySelectorAll('pre');
             
             preElements.forEach(function(pre) {
-                // Create smart copy button
+                // Create button
                 const button = document.createElement('button');
                 button.className = 'copy-button';
-                button.textContent = 'Smart Copy';
+                button.textContent = 'Copy';
                 
                 // Add button to pre element
                 pre.appendChild(button);
                 
-                // Smart copy functionality
+                // Add click event
                 button.addEventListener('click', function() {
-                    let code = pre.textContent.replace('Smart Copy', '').trim();
-                    const lines = code.split('\n').filter(line => line.trim() !== '');
-                    
-                    // If multiple lines, join with semicolons for terminal compatibility
-                    if (lines.length > 1) {
-                        code = lines.join(' ; ');
-                    }
-                    
+                    const code = pre.textContent.replace('Copy', '').trim();
                     navigator.clipboard.writeText(code)
                         .then(() => {
                             button.textContent = 'Copied!';
                             setTimeout(() => {
-                                button.textContent = 'Smart Copy';
+                                button.textContent = 'Copy';
                             }, 2000);
                         })
                         .catch(err => {
@@ -187,8 +149,24 @@
     
     <p>Now that you've connected to your Ubuntu VM, let's update the system and install the necessary dependencies for SpacetimeDB.</p>
 
-    <div class="note">
-        <strong>Terminal Copy Behavior:</strong> When you use the "Smart Copy" button, multi-line commands will automatically be joined with semicolons (;) for compatibility with all terminals, including Windows Command Prompt. This ensures all commands run in sequence regardless of platform.
+    <div class="step">
+        <h3>Test Block for Copy-Paste Functionality</h3>
+        <p>Here's a test block with harmless commands to check if multi-line copy-paste works in your terminal:</p>
+        
+        <pre>echo "Command 1: Hello from the first line"
+echo "Command 2: This is the second line"
+date
+echo "Command 3: This is the third line"
+ls -la | head -5</pre>
+        
+        <h3>Test Results on Multi-line Command Execution</h3>
+        <p>Our testing reveals that multi-line command behavior in SSH terminals can be unpredictable:</p>
+        <ul>
+            <li>Simple commands like <code>echo</code> and <code>date</code> usually execute in sequence when pasted together</li>
+            <li>Commands containing special characters (like pipes <code>|</code>) might require manual Enter key press</li>
+            <li>System modification commands might be processed differently than basic shell commands</li>
+            <li>For critical security or system configuration, always run commands individually</li>
+        </ul>
     </div>
 
     <div class="step">
@@ -208,6 +186,10 @@ sudo apt upgrade -y</pre>
 
         <div class="note">
             <strong>Expected Output:</strong> You'll see various packages being updated. It's important to wait for this process to complete before continuing.
+        </div>
+        
+        <div class="note">
+            <strong>Screenshot:</strong> Purple kernel upgrade notification screen.
         </div>
     </div>
 
@@ -242,7 +224,7 @@ sudo apt upgrade -y</pre>
         <pre>sudo ufw allow 443/tcp</pre>
         
         <div class="warning">
-            <strong>Important:</strong> Execute these firewall commands one at a time. Wait for each command to complete before running the next one to ensure all security rules are properly applied.
+            <strong>Important:</strong> Execute these firewall commands one at a time. Though simple multi-line commands often work when pasted together, commands like these that modify system security can behave unpredictably when pasted as a block, especially when connected through SSH from Windows. Wait for each command to complete before running the next one to ensure all security rules are properly applied.
         </div>
         
         <div class="warning">
@@ -306,7 +288,11 @@ sudo apt upgrade -y</pre>
         </table>
         
         <div class="note">
-            <strong>Note:</strong> SSH port (22) should already be open by default. If not, add it as well.
+            <strong>Note:</strong> The SSH port (22) should already be open by default.
+        </div>
+        
+        <div class="note">
+            <strong>Screenshot:</strong> Oracle Cloud Console security list with the added ingress rules.
         </div>
     </div>
 
@@ -320,10 +306,5 @@ sudo apt upgrade -y</pre>
     </div>
     
     <p>After reconnecting, we'll proceed with installing Rust and building SpacetimeDB from source.</p>
-
-    <div class="pagination">
-        <a href="page-1-connection.html">Previous: Initial Connection</a>
-        <a href="page-3-rust-spacetimedb.html">Next: Installing Rust & SpacetimeDB</a>
-    </div>
 </body>
 </html>
