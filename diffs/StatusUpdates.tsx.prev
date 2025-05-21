@@ -325,9 +325,9 @@ const StatusUpdates = () => {
       </div>
       
       
-      {/* Debug Buttons */}
+{/* Debug Buttons */}
       
-{/*}
+{/*
       <div className="mt-4 flex flex-wrap gap-2">
         <button
           onClick={() => fetchAllUpdates(connection)}
@@ -361,7 +361,9 @@ const StatusUpdates = () => {
         >
           Debug
         </button>
+*/}
 
+<div className="mt-4 flex">
         <button
           onClick={() => {
             if (connection?.reducers?.addAdmin) {
@@ -369,14 +371,11 @@ const StatusUpdates = () => {
               alert('Added current user as admin - refresh the page');
             }
           }}
-          className="px-4 py-2 bg-purple-200 rounded hover:bg-purple-300"
+          className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
         >
-          Make Admin
+          Make Current User Admin
         </button>
-
       </div>
-      
-{*/}
 
       {/* Admin Diagnostic & Management */}
         <div className="mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
