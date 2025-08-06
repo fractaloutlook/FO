@@ -38,13 +38,20 @@ function betterHash(id) {
     return hash >>> 0; // Ensure positive
   }
   export function getFriendlyName(sender) {
-    if (!sender || !sender.data) return "Unknown_User"; // Handle edge cases
+    if (!sender || typeof sender.toHexString !== 'function') {
+      return "unknown_user";
+    }
   
-    const idStr = sender.data.toString(); // Convert BigInt to string
+    const idStr = sender.toHexString(); // Get hex string from Identity
     const hash = betterHash(idStr);
   
-    const animal = animals[hash % animals.length];
-    const color = colors[(hash >> 3) % colors.length];
+    // Use different parts of the hash for animal and color to ensure variety
+    const animalIndex = hash % animals.length;
+    const colorIndex = Math.floor(hash / animals.length) % colors.length;
+    
+    const animal = animals[animalIndex];
+    const color = colors[colorIndex];
   
-    return `${animal}_${color}`;
+    // Return in correct order: color_animal (like blue_elephant)
+    return `${color}_${animal}`;
   }
