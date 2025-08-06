@@ -1,0 +1,128 @@
+use spacetimedb::{table, reducer, Table, ReducerContext, Identity, Timestamp};
+
+// Admin table - used to track users with admin privileges
+#[table(name = admin, public)]
+pub struct Admin {
+    identity: Identity,
+}
+
+// Current status - the latest status of the system
+#[table(name = current_status, public)]
+pub struct CurrentStatus {
+    #[primary_key]
+    id: u32,  // Always 0 for the singleton pattern
+    message: String,
+    last_updated: Timestamp,
+}
+
+// Update log - historical record of all status updates
+#[table(name = update_log, public)]
+pub struct UpdateLog {
+    #[primary_key]
+    #[auto_inc]
+    update_id: u64,
+    message: String,
+    timestamp: Timestamp,
+}
+
+// Initialize the module
+#[reducer(init)]
+pub fn init(ctx: &ReducerContext) -> Result<(), String> {
+    log::info!("Initializing status module...");
+
+    // Create initial status
+    ctx.db.current_status().insert(CurrentStatus {
+        id: 0,
+        message: String::from("Status system initialized"),
+        last_updated: ctx.timestamp,
+    });
+
+    log::info!("Initial status created");
+
+    // Add publisher as admin
+    ctx.db.admin().insert(Admin {
+        identity: ctx.sender,
+    });
+
+    log::info!("Module publisher added as admin: {:?}", ctx.sender);
+
+    Ok(())
+}
+
+// Helper function to check if a user is an admin
+fn is_admin(ctx: &ReducerContext) -> bool {
+    // Iterate through all admin records and check if any matches the sender's identity
+    for admin in ctx.db.admin().iter() {
+        if admin.identity == ctx.sender {
+            return true;
+        }
+    }
+    false
+}
+
+// Add the current user as an admin
+#[reducer]
+pub fn add_admin(ctx: &ReducerContext) -> Result<(), String> {
+    // Check if already an admin
+    if is_admin(ctx) {
+        // If already an admin, no need to re-add
+        log::info!("User is already an admin: {:?}", ctx.sender);
+        return Ok(());
+    }
+
+    log::info!("Adding new admin: {:?}", ctx.sender);
+    ctx.db.admin().insert(Admin {
+        identity: ctx.sender,
+    });
+
+    Ok(())
+}
+
+// Update the current status (admin only)
+#[reducer]
+pub fn update_status(ctx: &ReducerContext, message: String) -> Result<(), String> {
+    // Check admin privileges
+    if !is_admin(ctx) {
+        return Err("Only admins can update the status".into());
+    }
+
+    // Update the current status
+    if let Some(current_status) = ctx.db.current_status().id().find(0) {
+        ctx.db.current_status().id().update(CurrentStatus {
+            id: 0,
+            message: message.clone(),
+            last_updated: ctx.timestamp,
+        });
+    } else {
+        return Err("Current status not found".into());
+    }
+
+    // Add to update log
+    ctx.db.update_log().insert(UpdateLog {
+        update_id: 0,  // Will be auto-incremented
+        message,
+        timestamp: ctx.timestamp,
+    });
+
+    log::info!("Status updated by admin: {:?}", ctx.sender);
+    Ok(())
+}
+
+// Add a new entry to the update log (admin only)
+#[reducer]
+pub fn add_update(ctx: &ReducerContext, message: String) -> Result<(), String> {
+    // Check admin privileges
+    if !is_admin(ctx) {
+        return Err("Only admins can add updates".into());
+    }
+
+    // Add to update log
+    ctx.db.update_log().insert(UpdateLog {
+        update_id: 0,  // Will be auto-incremented
+        message,
+        timestamp: ctx.timestamp,
+    });
+
+    log::info!("Update added by admin: {:?}", ctx.sender);
+    Ok(())
+}
