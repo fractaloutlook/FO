@@ -8,17 +8,25 @@ This guide will help you migrate your existing data from `status-module` to `sta
 - You need admin access to both modules
 - Your React app should be updated to use `status-module-v2`
 
-## Step 1: Publish the New Module
+## Step 0: Get the Latest Code from GitHub
 
 On your Linux server:
 
 ```bash
-# Navigate to your repo
+# Navigate to your repo (or clone if you don't have it)
 cd ~/your-repo
+
+# If you don't have the repo yet:
+# git clone https://github.com/fractaloutlook/FO.git
+# cd FO
 
 # Pull the latest changes
 git pull origin main
+```
 
+## Step 1: Publish the New Module
+
+```bash
 # Navigate to server directory
 cd server
 
