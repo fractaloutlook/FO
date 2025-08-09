@@ -1,0 +1,39 @@
+diff --git a/src/pages/LandingPage.jsx b/src/pages/LandingPage.jsx
+index 1d78a1d..b75f818 100644
+--- a/src/pages/LandingPage.jsx
++++ b/src/pages/LandingPage.jsx
+@@ -4,6 +4,7 @@ import KofiButton from '../components/KofiButton';
+ import StatusUpdates from '../components/StatusUpdates';
+ import ChatSystem from '../components/ChatSystem';
+ import PollSystem from '../components/PollSystem';
++import CursorTracker from '../components/CursorTracker';
+ 
+ const LandingPage = () => {
+   const [connection, setConnection] = useState(null);
+@@ -75,6 +76,7 @@ const LandingPage = () => {
+                 'SELECT * FROM current_status',
+                 'SELECT * FROM message',
+                 'SELECT * FROM user',
++                'SELECT * FROM mouse_state', // Real-time cursor tracking
+                 //'SELECT * FROM poll',
+                 //'SELECT * FROM poll_option',
+                 //'SELECT * FROM poll_vote'
+@@ -95,6 +97,10 @@ const LandingPage = () => {
+   }, []);
+ 
+   return (
++    <>
++      {/* MMO-style cursor tracking */}
++      <CursorTracker connection={connection} />
++      
+ <div className="min-h-screen bg-gray-50 p-4 md:p-8 font-sans">
+ <div className="max-w-2xl mx-auto md:max-w-4xl lg:max-w-5xl space-y-8">
+         {/* Timer Banner */}
+@@ -205,6 +211,7 @@ const LandingPage = () => {
+         </div>
+       </div>
+     </div>
++    </>
+   );
+ };
+ 
