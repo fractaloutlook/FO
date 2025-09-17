@@ -364,7 +364,6 @@ const StatusUpdates = () => {
 */}
 
 {/*
-
 <div className="mt-4 flex">
         <button
           onClick={() => {
@@ -383,33 +382,31 @@ const StatusUpdates = () => {
         <div className="mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
           <h3 className="text-sm font-medium mb-2">Connection Diagnostics</h3>
           <div className="text-xs mb-2">
-  Current Identity: {connection?.identity 
+    Current Identity: {connection?.identity 
     ? `${getSimpleID(connection.identity)} (${connection.identity.data ? getFriendlyName(connection.identity) : "Unknown"})`
     : 'Not connected'}
-</div>
-          <div className="text-xs mb-2">Count: {connection?.db?.admin?.count() || 0}</div>
-          
-          {
-          <button
-            onClick={() => {
-              if (connection?.reducers?.addAdmin) {
-                connection.reducers.addAdmin();
-                alert('Added current user as admin');
-                setTimeout(() => {
-                  window.location.reload();
-                }, 500);
+    </div>
+              <div className="text-xs mb-2">Count: {connection?.db?.admin?.count() || 0}</div>
+              
+              {
+              <button
+                onClick={() => {
+                  if (connection?.reducers?.addAdmin) {
+                    connection.reducers.addAdmin();
+                    alert('Added current user as admin');
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 500);
+                  }
+                }}
+                className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+              >
+                Make Current Identity Admin
+              </button>
               }
-            }}
-            className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-          >
-            Make Current Identity Admin
-          </button>
-          }
-        </div>
+            </div>
     </div> 
-  );
-};*/
-
-}
+  );*/</div>
+};
 
 export default StatusUpdates;
