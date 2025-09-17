@@ -363,7 +363,6 @@ const StatusUpdates = () => {
         </button>
 */}
 
-{/*
 <div className="mt-4 flex">
         <button
           onClick={() => {
@@ -389,11 +388,11 @@ const StatusUpdates = () => {
               <div className="text-xs mb-2">Count: {connection?.db?.admin?.count() || 0}</div>
               
               {
-              <button
+              /*<button
                 onClick={() => {
                   if (connection?.reducers?.addAdmin) {
-                    connection.reducers.addAdmin();
-                    alert('Added current user as admin');
+                    //connection.reducers.addAdmin();
+                    //alert('Added current user as admin');
                     setTimeout(() => {
                       window.location.reload();
                     }, 500);
@@ -403,10 +402,10 @@ const StatusUpdates = () => {
               >
                 Make Current Identity Admin
               </button>
-              }
+              */}
             </div>
     </div> 
-  );*/</div>
+  );
 };
 
 export default StatusUpdates;
