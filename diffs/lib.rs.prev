@@ -1,8 +1,14 @@
 use spacetimedb::{table, reducer, Identity, ReducerContext, Timestamp, Table};
 use anyhow::{anyhow, Result};
 
+// Admin table - used to track users with admin privileges
+#[table(name = admin, public)]
+pub struct Admin {
+    #[primary_key]
+    identity: Identity,
+}
 
-// The main status message shown at the top
+// Current status - the latest status of the system
 #[table(name = current_status, public)]
 pub struct CurrentStatus {
     #[primary_key]
@@ -11,7 +17,7 @@ pub struct CurrentStatus {
     last_updated: Timestamp,
 }
 
-// The history of all updates
+// Update log - historical record of all status updates
 #[table(name = update_log, public)]
 pub struct UpdateLog {
     #[primary_key]
@@ -21,11 +27,79 @@ pub struct UpdateLog {
     timestamp: Timestamp,
 }
 
-// Table to track admin access
-#[table(name = admin, public)]
-pub struct Admin {
+// User table - track users and their online status
+#[table(name = user, public)]
+pub struct User {
     #[primary_key]
     identity: Identity,
+    name: Option<String>,
+    online: bool,
+}
+
+// Message table - store chat messages
+#[table(name = message, public)]
+pub struct Message {
+    sender: Identity,
+    sent: Timestamp,
+    text: String,
+}
+
+// Poll system tables
+#[table(name = poll, public)]
+pub struct Poll {
+    #[primary_key]
+    #[auto_inc]
+    poll_id: u64,
+    question: String,
+    created_by: Identity,
+    created_at: Timestamp,
+    expires_at: Option<Timestamp>,
+    active: bool,
+}
+
+#[table(name = poll_option, public)]
+pub struct PollOption {
+    #[primary_key]
+    #[auto_inc]
+    option_id: u64,
+    poll_id: u64,
+    text: String,
+}
+
+#[table(name = poll_vote, public)]
+pub struct PollVote {
+    #[primary_key]
+    #[auto_inc]
+    vote_id: u64,
+    poll_id: u64,
+    option_id: u64,
+    voter: Identity,
+    voted_at: Timestamp,
+}
+
+// Mouse state - comprehensive real-time mouse/interaction tracking for MMO-style webpage
+#[table(name = mouse_state, public)]
+pub struct MouseState {
+    #[primary_key]
+    identity: Identity,
+    // Basic position
+    x: f32,
+    y: f32,
+    // Click states (for collaborative clicking, drawing, etc.)
+    left_button_down: bool,
+    right_button_down: bool,
+    middle_button_down: bool,
+    // Scroll tracking (for synchronized scrolling)
+    scroll_x: f32,
+    scroll_y: f32,
+    // Interaction states (for collaborative interactions)
+    is_dragging: bool,
+    hovered_element: String, // CSS selector or element ID of what they're hovering
+    // Viewport info (essential for different screen sizes in multiplayer)
+    viewport_width: f32,
+    viewport_height: f32,
+    // Activity tracking
+    last_updated: Timestamp,
 }
 
 // Initialize the database with empty status
@@ -40,7 +114,6 @@ pub fn init(ctx: &ReducerContext) {
         last_updated: ctx.timestamp,
     });
 }
-
 
 // Check if a given identity is an admin
 fn is_admin(ctx: &ReducerContext) -> bool {
@@ -81,59 +154,7 @@ pub fn add_update(ctx: &ReducerContext, message: String) -> Result<(), String> {
     Ok(())
 }
 
-
-
-#[spacetimedb::table(name = user, public)]
-pub struct User {
-    #[primary_key]
-    identity: Identity,
-    name: Option<String>,
-    online: bool,
-}
-
-#[spacetimedb::table(name = message, public)]
-pub struct Message {
-    sender: Identity,
-    sent: Timestamp,
-    text: String,
-}
-
-// Poll system tables
-#[spacetimedb::table(name = poll, public)]
-pub struct Poll {
-    #[primary_key]
-    #[auto_inc]
-    poll_id: u64,
-    question: String,
-    created_by: Identity,
-    created_at: Timestamp,
-    expires_at: Option<Timestamp>,
-    active: bool,
-}
-
-#[spacetimedb::table(name = poll_option, public)]
-pub struct PollOption {
-    #[primary_key]
-    #[auto_inc]
-    option_id: u64,
-    poll_id: u64,
-    text: String,
-}
-
-#[spacetimedb::table(name = poll_vote, public)]
-pub struct PollVote {
-    #[primary_key]
-    #[auto_inc]
-    vote_id: u64,
-    poll_id: u64,
-    option_id: u64,
-    voter: Identity,
-    voted_at: Timestamp,
-}
-
-
-
-#[spacetimedb::reducer(client_connected)]
+#[reducer(client_connected)]
 pub fn identity_connected(ctx: &ReducerContext) {
     if let Some(user) = ctx.db.user().identity().find(&ctx.sender) {
         // If this is a returning user, i.e. we already have a `User` with this `Identity`,
@@ -153,7 +174,7 @@ pub fn identity_connected(ctx: &ReducerContext) {
     }
 }
 
-#[spacetimedb::reducer(client_disconnected)]
+#[reducer(client_disconnected)]
 pub fn identity_disconnected(ctx: &ReducerContext) {
     if let Some(user) = ctx.db.user().identity().find(&ctx.sender) {
         ctx.db.user().identity().update(
@@ -180,7 +201,7 @@ fn validate_name(name: String) -> Result<String> {
     }
 }
 
-#[spacetimedb::reducer]
+#[reducer]
 pub fn set_name(ctx: &ReducerContext, name: String) -> Result<()> {
     let name = validate_name(name)?;
     if let Some(user) = ctx.db.user().identity().find(&ctx.sender) {
@@ -204,7 +225,7 @@ fn validate_message(text: String) -> Result<String> {
     }
 }
 
-#[spacetimedb::reducer]
+#[reducer]
 pub fn send_message(ctx: &ReducerContext, text: String) -> Result<()> {
     // Things to consider:
     // - Rate-limit messages per-user.
@@ -218,33 +239,8 @@ pub fn send_message(ctx: &ReducerContext, text: String) -> Result<()> {
     Ok(())
 }
 
-// Mouse state - comprehensive real-time mouse/interaction tracking for MMO-style webpage
-#[spacetimedb::table(name = mouse_state, public)]
-pub struct MouseState {
-    #[primary_key]
-    identity: Identity,
-    // Basic position
-    x: f32,
-    y: f32,
-    // Click states (for collaborative clicking, drawing, etc.)
-    left_button_down: bool,
-    right_button_down: bool,
-    middle_button_down: bool,
-    // Scroll tracking (for synchronized scrolling)
-    scroll_x: f32,
-    scroll_y: f32,
-    // Interaction states (for collaborative interactions)
-    is_dragging: bool,
-    hovered_element: String, // CSS selector or element ID of what they're hovering
-    // Viewport info (essential for different screen sizes in multiplayer)
-    viewport_width: f32,
-    viewport_height: f32,
-    // Activity tracking
-    last_updated: Timestamp,
-}
-
 // Update mouse state - real-time mouse/interaction tracking (public access)
-#[spacetimedb::reducer]
+#[reducer]
 pub fn update_mouse_state(
     ctx: &ReducerContext,
     x: f32,
