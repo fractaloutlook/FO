@@ -410,6 +410,4 @@ const StatusUpdates = () => {
   );
 };
 
-*/}
-
 export default StatusUpdates;
