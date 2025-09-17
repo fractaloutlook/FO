@@ -406,10 +406,10 @@ const StatusUpdates = () => {
           </button>
           }
         </div>
-    </div>
+    </div> 
   );
-};
+};*/
 
-*/}
+}
 
 export default StatusUpdates;
