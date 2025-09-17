@@ -1,0 +1,19 @@
+diff --git a/src/components/StatusUpdates.tsx b/src/components/StatusUpdates.tsx
+index 621fb3a..b018817 100644
+--- a/src/components/StatusUpdates.tsx
++++ b/src/components/StatusUpdates.tsx
+@@ -406,10 +406,10 @@ const StatusUpdates = () => {
+           </button>
+           }
+         </div>
+-    </div>
++    </div> 
+   );
+-};
++};*/
+ 
+-*/}
++}
+ 
+ export default StatusUpdates;
+\ No newline at end of file
