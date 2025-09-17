@@ -363,6 +363,8 @@ const StatusUpdates = () => {
         </button>
 */}
 
+{/*
+
 <div className="mt-4 flex">
         <button
           onClick={() => {
@@ -377,7 +379,7 @@ const StatusUpdates = () => {
         </button>
       </div>
 
-      {/* Admin Diagnostic & Management */}
+      {/ Admin Diagnostic & Management /}
         <div className="mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
           <h3 className="text-sm font-medium mb-2">Connection Diagnostics</h3>
           <div className="text-xs mb-2">
@@ -387,7 +389,7 @@ const StatusUpdates = () => {
 </div>
           <div className="text-xs mb-2">Count: {connection?.db?.admin?.count() || 0}</div>
           
-          {/*
+          {
           <button
             onClick={() => {
               if (connection?.reducers?.addAdmin) {
@@ -402,10 +404,12 @@ const StatusUpdates = () => {
           >
             Make Current Identity Admin
           </button>
-          */}
+          }
         </div>
     </div>
   );
 };
+
+*/}
 
 export default StatusUpdates;
