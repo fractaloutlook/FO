@@ -229,7 +229,14 @@ fn validate_message(text: String) -> Result<String> {
 pub fn send_message(ctx: &ReducerContext, text: String) -> Result<()> {
     // Things to consider:
     // - Rate-limit messages per-user.
-    // - Reject messages from unnamed users.
+
+    // Reject messages from unnamed users
+    let user = ctx.db.user().identity().find(&ctx.sender)
+        .ok_or_else(|| anyhow!("User not found"))?;
+    if user.name.is_none() {
+        return Err(anyhow!("You must set a name before sending messages"));
+    }
+
     let text = validate_message(text)?;
     ctx.db.message().insert(Message {
         sender: ctx.sender,
