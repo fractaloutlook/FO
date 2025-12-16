@@ -3,63 +3,17 @@
 
 /* eslint-disable */
 /* tslint:disable */
-// @ts-nocheck
 import {
-  AlgebraicType,
-  AlgebraicValue,
-  BinaryReader,
-  BinaryWriter,
-  CallReducerFlags,
-  ConnectionId,
-  DbConnectionBuilder,
-  DbConnectionImpl,
-  DbContext,
-  ErrorContextInterface,
-  Event,
-  EventContextInterface,
-  Identity,
-  ProductType,
-  ProductTypeElement,
-  ReducerEventContextInterface,
-  SubscriptionBuilderImpl,
-  SubscriptionEventContextInterface,
-  SumType,
-  SumTypeVariant,
-  TableCache,
-  TimeDuration,
-  Timestamp,
-  deepEqual,
-} from "@clockworklabs/spacetimedb-sdk";
-export type UpdateLog = {
-  updateId: bigint,
-  message: string,
-  timestamp: bigint,
-};
+  TypeBuilder as __TypeBuilder,
+  t as __t,
+  type AlgebraicTypeType as __AlgebraicTypeType,
+  type Infer as __Infer,
+} from "spacetimedb";
 
-/**
- * A namespace for generated helper functions.
- */
-export namespace UpdateLog {
-  /**
-  * A function which returns this type represented as an AlgebraicType.
-  * This function is derived from the AlgebraicType used to generate this type.
-  */
-  export function getTypeScriptAlgebraicType(): AlgebraicType {
-    return AlgebraicType.createProductType([
-      new ProductTypeElement("updateId", AlgebraicType.createU64Type()),
-      new ProductTypeElement("message", AlgebraicType.createStringType()),
-      new ProductTypeElement("timestamp", AlgebraicType.createU64Type()),
-    ]);
-  }
-
-  export function serialize(writer: BinaryWriter, value: UpdateLog): void {
-    UpdateLog.getTypeScriptAlgebraicType().serialize(writer, value);
-  }
-
-  export function deserialize(reader: BinaryReader): UpdateLog {
-    return UpdateLog.getTypeScriptAlgebraicType().deserialize(reader);
-  }
-
-}
+export default __t.object("UpdateLog", {
+  updateId: __t.u64(),
+  message: __t.string(),
+  timestamp: __t.timestamp(),
+});
 
 

@@ -41,6 +41,7 @@ const LandingPage = () => {
         const conn = DbConnection.builder()
           .withUri('wss://api.fractaloutlook.com') // Use the secure production URL
           .withModuleName('status-module-v2')
+          .withCompression("none")
           .withToken(localStorage.getItem('auth_token'))
           .onConnect((connectedConn, identity, token) => {
             console.log("Connected to SpacetimeDB!", identity);

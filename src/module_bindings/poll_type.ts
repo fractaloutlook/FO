@@ -3,69 +3,20 @@
 
 /* eslint-disable */
 /* tslint:disable */
-// @ts-nocheck
 import {
-  AlgebraicType,
-  AlgebraicValue,
-  BinaryReader,
-  BinaryWriter,
-  CallReducerFlags,
-  ConnectionId,
-  DbConnectionBuilder,
-  DbConnectionImpl,
-  DbContext,
-  ErrorContextInterface,
-  Event,
-  EventContextInterface,
-  Identity,
-  ProductType,
-  ProductTypeElement,
-  ReducerEventContextInterface,
-  SubscriptionBuilderImpl,
-  SubscriptionEventContextInterface,
-  SumType,
-  SumTypeVariant,
-  TableCache,
-  TimeDuration,
-  Timestamp,
-  deepEqual,
-} from "@clockworklabs/spacetimedb-sdk";
-export type Poll = {
-  pollId: bigint,
-  question: string,
-  createdBy: Identity,
-  createdAt: bigint,
-  expiresAt: bigint | undefined,
-  active: boolean,
-};
+  TypeBuilder as __TypeBuilder,
+  t as __t,
+  type AlgebraicTypeType as __AlgebraicTypeType,
+  type Infer as __Infer,
+} from "spacetimedb";
 
-/**
- * A namespace for generated helper functions.
- */
-export namespace Poll {
-  /**
-  * A function which returns this type represented as an AlgebraicType.
-  * This function is derived from the AlgebraicType used to generate this type.
-  */
-  export function getTypeScriptAlgebraicType(): AlgebraicType {
-    return AlgebraicType.createProductType([
-      new ProductTypeElement("pollId", AlgebraicType.createU64Type()),
-      new ProductTypeElement("question", AlgebraicType.createStringType()),
-      new ProductTypeElement("createdBy", AlgebraicType.createIdentityType()),
-      new ProductTypeElement("createdAt", AlgebraicType.createU64Type()),
-      new ProductTypeElement("expiresAt", AlgebraicType.createOptionType(AlgebraicType.createU64Type())),
-      new ProductTypeElement("active", AlgebraicType.createBoolType()),
-    ]);
-  }
-
-  export function serialize(writer: BinaryWriter, value: Poll): void {
-    Poll.getTypeScriptAlgebraicType().serialize(writer, value);
-  }
-
-  export function deserialize(reader: BinaryReader): Poll {
-    return Poll.getTypeScriptAlgebraicType().deserialize(reader);
-  }
-
-}
+export default __t.object("Poll", {
+  pollId: __t.u64(),
+  question: __t.string(),
+  createdBy: __t.identity(),
+  createdAt: __t.timestamp(),
+  expiresAt: __t.option(__t.timestamp()),
+  active: __t.bool(),
+});
 
 

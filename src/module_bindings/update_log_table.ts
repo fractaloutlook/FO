@@ -3,74 +3,15 @@
 
 /* eslint-disable */
 /* tslint:disable */
-// @ts-nocheck
 import {
-  AlgebraicType,
-  AlgebraicValue,
-  BinaryReader,
-  BinaryWriter,
-  CallReducerFlags,
-  ConnectionId,
-  DbConnectionBuilder,
-  DbConnectionImpl,
-  DbContext,
-  ErrorContextInterface,
-  Event,
-  EventContextInterface,
-  Identity,
-  ProductType,
-  ProductTypeElement,
-  ReducerEventContextInterface,
-  SubscriptionBuilderImpl,
-  SubscriptionEventContextInterface,
-  SumType,
-  SumTypeVariant,
-  TableCache,
-  TimeDuration,
-  Timestamp,
-  deepEqual,
-} from "@clockworklabs/spacetimedb-sdk";
-import { UpdateLog } from "./update_log_type";
-import { EventContext, Reducer, RemoteReducers, RemoteTables } from ".";
+  TypeBuilder as __TypeBuilder,
+  t as __t,
+  type AlgebraicTypeType as __AlgebraicTypeType,
+  type Infer as __Infer,
+} from "spacetimedb";
 
-/**
- * Table handle for the table `update_log`.
- *
- * Obtain a handle from the [`updateLog`] property on [`RemoteTables`],
- * like `ctx.db.updateLog`.
- *
- * Users are encouraged not to explicitly reference this type,
- * but to directly chain method calls,
- * like `ctx.db.updateLog.on_insert(...)`.
- */
-export class UpdateLogTableHandle {
-  tableCache: TableCache<UpdateLog>;
-
-  constructor(tableCache: TableCache<UpdateLog>) {
-    this.tableCache = tableCache;
-  }
-
-  count(): number {
-    return this.tableCache.count();
-  }
-
-  iter(): Iterable<UpdateLog> {
-    return this.tableCache.iter();
-  }
-
-  onInsert = (cb: (ctx: EventContext, row: UpdateLog) => void) => {
-    return this.tableCache.onInsert(cb);
-  }
-
-  removeOnInsert = (cb: (ctx: EventContext, row: UpdateLog) => void) => {
-    return this.tableCache.removeOnInsert(cb);
-  }
-
-  onDelete = (cb: (ctx: EventContext, row: UpdateLog) => void) => {
-    return this.tableCache.onDelete(cb);
-  }
-
-  removeOnDelete = (cb: (ctx: EventContext, row: UpdateLog) => void) => {
-    return this.tableCache.removeOnDelete(cb);
-  }
-}
+export default __t.row({
+  updateId: __t.u64().primaryKey(),
+  message: __t.string(),
+  timestamp: __t.timestamp(),
+});

@@ -3,63 +3,17 @@
 
 /* eslint-disable */
 /* tslint:disable */
-// @ts-nocheck
 import {
-  AlgebraicType,
-  AlgebraicValue,
-  BinaryReader,
-  BinaryWriter,
-  CallReducerFlags,
-  ConnectionId,
-  DbConnectionBuilder,
-  DbConnectionImpl,
-  DbContext,
-  ErrorContextInterface,
-  Event,
-  EventContextInterface,
-  Identity,
-  ProductType,
-  ProductTypeElement,
-  ReducerEventContextInterface,
-  SubscriptionBuilderImpl,
-  SubscriptionEventContextInterface,
-  SumType,
-  SumTypeVariant,
-  TableCache,
-  TimeDuration,
-  Timestamp,
-  deepEqual,
-} from "@clockworklabs/spacetimedb-sdk";
-export type CurrentStatus = {
-  id: number,
-  message: string,
-  lastUpdated: bigint,
-};
+  TypeBuilder as __TypeBuilder,
+  t as __t,
+  type AlgebraicTypeType as __AlgebraicTypeType,
+  type Infer as __Infer,
+} from "spacetimedb";
 
-/**
- * A namespace for generated helper functions.
- */
-export namespace CurrentStatus {
-  /**
-  * A function which returns this type represented as an AlgebraicType.
-  * This function is derived from the AlgebraicType used to generate this type.
-  */
-  export function getTypeScriptAlgebraicType(): AlgebraicType {
-    return AlgebraicType.createProductType([
-      new ProductTypeElement("id", AlgebraicType.createU32Type()),
-      new ProductTypeElement("message", AlgebraicType.createStringType()),
-      new ProductTypeElement("lastUpdated", AlgebraicType.createU64Type()),
-    ]);
-  }
-
-  export function serialize(writer: BinaryWriter, value: CurrentStatus): void {
-    CurrentStatus.getTypeScriptAlgebraicType().serialize(writer, value);
-  }
-
-  export function deserialize(reader: BinaryReader): CurrentStatus {
-    return CurrentStatus.getTypeScriptAlgebraicType().deserialize(reader);
-  }
-
-}
+export default __t.object("CurrentStatus", {
+  id: __t.u32(),
+  message: __t.string(),
+  lastUpdated: __t.timestamp(),
+});
 
 

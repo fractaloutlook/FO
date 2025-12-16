@@ -3,104 +3,17 @@
 
 /* eslint-disable */
 /* tslint:disable */
-// @ts-nocheck
 import {
-  AlgebraicType,
-  AlgebraicValue,
-  BinaryReader,
-  BinaryWriter,
-  CallReducerFlags,
-  ConnectionId,
-  DbConnectionBuilder,
-  DbConnectionImpl,
-  DbContext,
-  ErrorContextInterface,
-  Event,
-  EventContextInterface,
-  Identity,
-  ProductType,
-  ProductTypeElement,
-  ReducerEventContextInterface,
-  SubscriptionBuilderImpl,
-  SubscriptionEventContextInterface,
-  SumType,
-  SumTypeVariant,
-  TableCache,
-  TimeDuration,
-  Timestamp,
-  deepEqual,
-} from "@clockworklabs/spacetimedb-sdk";
-import { PollVote } from "./poll_vote_type";
-import { EventContext, Reducer, RemoteReducers, RemoteTables } from ".";
+  TypeBuilder as __TypeBuilder,
+  t as __t,
+  type AlgebraicTypeType as __AlgebraicTypeType,
+  type Infer as __Infer,
+} from "spacetimedb";
 
-/**
- * Table handle for the table `poll_vote`.
- *
- * Obtain a handle from the [`pollVote`] property on [`RemoteTables`],
- * like `ctx.db.pollVote`.
- *
- * Users are encouraged not to explicitly reference this type,
- * but to directly chain method calls,
- * like `ctx.db.pollVote.on_insert(...)`.
- */
-export class PollVoteTableHandle {
-  tableCache: TableCache<PollVote>;
-
-  constructor(tableCache: TableCache<PollVote>) {
-    this.tableCache = tableCache;
-  }
-
-  count(): number {
-    return this.tableCache.count();
-  }
-
-  iter(): Iterable<PollVote> {
-    return this.tableCache.iter();
-  }
-  /**
-   * Access to the `vote_id` unique index on the table `poll_vote`,
-   * which allows point queries on the field of the same name
-   * via the [`PollVoteVoteIdUnique.find`] method.
-   *
-   * Users are encouraged not to explicitly reference this type,
-   * but to directly chain method calls,
-   * like `ctx.db.pollVote.vote_id().find(...)`.
-   *
-   * Get a handle on the `vote_id` unique index on the table `poll_vote`.
-   */
-  vote_id = {
-    // Find the subscribed row whose `vote_id` column value is equal to `col_val`,
-    // if such a row is present in the client cache.
-    find: (col_val: bigint): PollVote | undefined => {
-      for (let row of this.tableCache.iter()) {
-        if (deepEqual(row.vote_id, col_val)) {
-          return row;
-        }
-      }
-    },
-  };
-
-  onInsert = (cb: (ctx: EventContext, row: PollVote) => void) => {
-    return this.tableCache.onInsert(cb);
-  }
-
-  removeOnInsert = (cb: (ctx: EventContext, row: PollVote) => void) => {
-    return this.tableCache.removeOnInsert(cb);
-  }
-
-  onDelete = (cb: (ctx: EventContext, row: PollVote) => void) => {
-    return this.tableCache.onDelete(cb);
-  }
-
-  removeOnDelete = (cb: (ctx: EventContext, row: PollVote) => void) => {
-    return this.tableCache.removeOnDelete(cb);
-  }
-
-  // Updates are only defined for tables with primary keys.
-  onUpdate = (cb: (ctx: EventContext, oldRow: PollVote, newRow: PollVote) => void) => {
-    return this.tableCache.onUpdate(cb);
-  }
-
-  removeOnUpdate = (cb: (ctx: EventContext, onRow: PollVote, newRow: PollVote) => void) => {
-    return this.tableCache.removeOnUpdate(cb);
-  }}
+export default __t.row({
+  voteId: __t.u64().primaryKey(),
+  pollId: __t.u64(),
+  optionId: __t.u64(),
+  voter: __t.identity(),
+  votedAt: __t.timestamp(),
+});

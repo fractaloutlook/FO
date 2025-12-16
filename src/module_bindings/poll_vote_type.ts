@@ -3,67 +3,19 @@
 
 /* eslint-disable */
 /* tslint:disable */
-// @ts-nocheck
 import {
-  AlgebraicType,
-  AlgebraicValue,
-  BinaryReader,
-  BinaryWriter,
-  CallReducerFlags,
-  ConnectionId,
-  DbConnectionBuilder,
-  DbConnectionImpl,
-  DbContext,
-  ErrorContextInterface,
-  Event,
-  EventContextInterface,
-  Identity,
-  ProductType,
-  ProductTypeElement,
-  ReducerEventContextInterface,
-  SubscriptionBuilderImpl,
-  SubscriptionEventContextInterface,
-  SumType,
-  SumTypeVariant,
-  TableCache,
-  TimeDuration,
-  Timestamp,
-  deepEqual,
-} from "@clockworklabs/spacetimedb-sdk";
-export type PollVote = {
-  voteId: bigint,
-  voter: Identity,
-  pollId: bigint,
-  optionId: bigint,
-  votedAt: bigint,
-};
+  TypeBuilder as __TypeBuilder,
+  t as __t,
+  type AlgebraicTypeType as __AlgebraicTypeType,
+  type Infer as __Infer,
+} from "spacetimedb";
 
-/**
- * A namespace for generated helper functions.
- */
-export namespace PollVote {
-  /**
-  * A function which returns this type represented as an AlgebraicType.
-  * This function is derived from the AlgebraicType used to generate this type.
-  */
-  export function getTypeScriptAlgebraicType(): AlgebraicType {
-    return AlgebraicType.createProductType([
-      new ProductTypeElement("voteId", AlgebraicType.createU64Type()),
-      new ProductTypeElement("voter", AlgebraicType.createIdentityType()),
-      new ProductTypeElement("pollId", AlgebraicType.createU64Type()),
-      new ProductTypeElement("optionId", AlgebraicType.createU64Type()),
-      new ProductTypeElement("votedAt", AlgebraicType.createU64Type()),
-    ]);
-  }
-
-  export function serialize(writer: BinaryWriter, value: PollVote): void {
-    PollVote.getTypeScriptAlgebraicType().serialize(writer, value);
-  }
-
-  export function deserialize(reader: BinaryReader): PollVote {
-    return PollVote.getTypeScriptAlgebraicType().deserialize(reader);
-  }
-
-}
+export default __t.object("PollVote", {
+  voteId: __t.u64(),
+  pollId: __t.u64(),
+  optionId: __t.u64(),
+  voter: __t.identity(),
+  votedAt: __t.timestamp(),
+});
 
 
