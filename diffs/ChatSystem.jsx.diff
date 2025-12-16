@@ -1,0 +1,13 @@
+diff --git a/src/components/ChatSystem.jsx b/src/components/ChatSystem.jsx
+index 90f86ad..5958987 100644
+--- a/src/components/ChatSystem.jsx
++++ b/src/components/ChatSystem.jsx
+@@ -75,7 +75,7 @@ const ChatSystem = ({ connection }) => {
+ 
+     try {
+       if (connection.reducers?.sendMessage) {
+-        connection.reducers.sendMessage(messageToSend);
++        connection.reducers.sendMessage({ text: messageToSend });
+         setSendStatus('Message sent!');
+       } else {
+         setSendStatus('No suitable reducer found');
