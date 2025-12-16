@@ -177,9 +177,9 @@ const CursorTracker = ({ connection }) => {
         .filter(cursor => cursor.identity.toHexString() !== currentUserIdentity?.toHexString());
       setOtherCursors(existingCursors);
 
-      // Subscribe to updates
-      const unsubscribe = connection.db.mouseState.onInsert((ctx, mouseState) => {
-        // Only show other users' cursors
+      // Subscribe to updates (new version)
+      // Handle new cursors
+      const unsubInsert = connection.db.mouseState.onInsert((ctx, mouseState) => {
         if (mouseState.identity.toHexString() !== currentUserIdentity?.toHexString()) {
           setOtherCursors(prev => {
             const filtered = prev.filter(cursor => 
@@ -190,11 +190,22 @@ const CursorTracker = ({ connection }) => {
         }
       });
 
-      return () => {
-        if (typeof unsubscribe === 'function') {
-          unsubscribe();
+      // Handle cursor updates (movement)
+      const unsubUpdate = connection.db.mouseState.onUpdate((ctx, oldState, newState) => {
+        if (newState.identity.toHexString() !== currentUserIdentity?.toHexString()) {
+          setOtherCursors(prev => {
+            const filtered = prev.filter(cursor => 
+              cursor.identity.toHexString() !== newState.identity.toHexString()
+            );
+            return [...filtered, newState];
+          });
         }
-      };
+      });
+
+      return () => {
+        if (typeof unsubInsert === 'function') unsubInsert();
+        if (typeof unsubUpdate === 'function') unsubUpdate();
+      };      
     } catch (error) {
       console.error('Error setting up cursor subscription:', error);
     }

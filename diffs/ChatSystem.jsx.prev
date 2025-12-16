@@ -75,7 +75,7 @@ const ChatSystem = ({ connection }) => {
 
     try {
       if (connection.reducers?.sendMessage) {
-        connection.reducers.sendMessage(messageToSend);
+        connection.reducers.sendMessage({ text: messageToSend });
         setSendStatus('Message sent!');
       } else {
         setSendStatus('No suitable reducer found');
