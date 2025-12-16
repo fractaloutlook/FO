@@ -44,19 +44,19 @@ const CursorTracker = ({ connection }) => {
     if (!connection || !connection.reducers?.updateMouseState || !isTracking) return;
 
     try {
-      connection.reducers.updateMouseState(
-        newState.x,
-        newState.y,
-        newState.leftButtonDown,
-        newState.rightButtonDown,
-        newState.middleButtonDown,
-        newState.scrollX,
-        newState.scrollY,
-        newState.isDragging,
-        newState.hoveredElement,
-        newState.viewportWidth,
-        newState.viewportHeight
-      );
+      connection.reducers.updateMouseState({
+      x: newState.x,
+      y: newState.y,
+      leftButtonDown: newState.leftButtonDown,
+      rightButtonDown: newState.rightButtonDown,
+      middleButtonDown: newState.middleButtonDown,
+      scrollX: newState.scrollX,
+      scrollY: newState.scrollY,
+      isDragging: newState.isDragging,
+      hoveredElement: newState.hoveredElement,
+      viewportWidth: newState.viewportWidth,
+      viewportHeight: newState.viewportHeight,
+    });
     } catch (error) {
       console.warn('Failed to send mouse state:', error);
     }
